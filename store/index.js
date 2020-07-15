@@ -102,24 +102,6 @@ export const actions = {
         console.error(err);
       });
 
-      state().client
-      .listBuckets()
-      .then((res) => {
-        console.log("WIP NO MORE?");
-        const buckets = res.getBucketsList();
-  
-        buckets.forEach((bucket) => {
-          console.log('key:', bucket.getKey());
-          console.log('name:', bucket.getName());
-          console.log('path:', bucket.getPath());
-          console.log('createdAt:', bucket.getCreatedat());
-          console.log('updatedAt:', bucket.getUpdatedat());
-        });
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-
     }
     
 }

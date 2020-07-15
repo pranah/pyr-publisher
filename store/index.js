@@ -5,7 +5,6 @@ import { NOISE } from 'libp2p-noise'
 import Secio from 'libp2p-secio'
 import Mplex from 'libp2p-mplex'
 import Boostrap from 'libp2p-bootstrap'
-// global.XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 import { SpaceClient } from '@fleekhq/space-client';
 
 export const state = () => ({
@@ -85,6 +84,42 @@ export const actions = {
     },
     syncNode: ({ commit }, libp2p) => {
       commit('syncNode', libp2p)
-    }, 
+    },
+    testBucket: () => {
+
+      state().client
+      .createBucket({ slug: 'myNewBucket'})
+      .then((res) => {
+        const bucket = res.getBucket();
+  
+        console.log(bucket.getKey());
+        console.log(bucket.getName());
+        console.log(bucket.getPath());
+        console.log(bucket.getCreatedat());
+        console.log(bucket.getUpdatedat());
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+
+      state().client
+      .listBuckets()
+      .then((res) => {
+        console.log("WIP NO MORE?");
+        const buckets = res.getBucketsList();
+  
+        buckets.forEach((bucket) => {
+          console.log('key:', bucket.getKey());
+          console.log('name:', bucket.getName());
+          console.log('path:', bucket.getPath());
+          console.log('createdAt:', bucket.getCreatedat());
+          console.log('updatedAt:', bucket.getUpdatedat());
+        });
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+
+    }
     
 }

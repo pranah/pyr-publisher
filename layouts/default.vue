@@ -93,14 +93,17 @@ export default {
   methods: {
       ...mapActions([
         'initLibP2P',
+        'testBucket'
       ])
     },
     computed: {
       ...mapState([
+        'client'
       ])
     },
     created() {
-        this.initLibP2P()
+        this.initLibP2P();
+        this.testBucket();
     } 
 }
 </script>

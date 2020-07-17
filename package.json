@@ -8,10 +8,11 @@
     "start": "nuxt start",
     "export": "nuxt export",
     "serve": "nuxt serve",
-    "generate": "nuxt build --target-static && nuxt export"
+    "generate": "nuxt build --spa --target-static && nuxt export"
   },
   "dependencies": {
     "@fleekhq/space-client": "^0.1.5",
+    "@metamask/detect-provider": "^1.1.0",
     "@nuxtjs/axios": "^5.11.0",
     "child_process": "^1.0.2",
     "fs": "0.0.1-security",

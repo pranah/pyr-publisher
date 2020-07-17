@@ -53,9 +53,7 @@ import { mapState, mapActions } from 'vuex'
 import Hud from '@/components/Hud.vue'
 
 export default {
-  components : {
-    Hud
-  },
+
   data () {
     return {
       clipped: false,
@@ -74,12 +72,7 @@ export default {
         },
         {
           icon: 'mdi-chart-bubble',
-          title: 'Browse Publications',
-          to: '/publications'
-        },
-        {
-          icon: 'mdi-chart-bubble',
-          title: 'Personal Collection',
+          title: 'Publications',
           to: '/collection'
         }
       ],
@@ -93,7 +86,9 @@ export default {
   methods: {
       ...mapActions([
         'initLibP2P',
-        'testBucket'
+        'testBucket',
+        'fleekUserId',
+        'fetchProvider'
       ])
     },
     computed: {
@@ -101,9 +96,12 @@ export default {
         'client'
       ])
     },
+    fetch() {
+    },
     created() {
-        this.initLibP2P();
-        this.testBucket();
+      this.initLibP2P();
+      this.fetchProvider();
+      this.fleekUserId();
     } 
 }
 </script>

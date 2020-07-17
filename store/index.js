@@ -6,25 +6,38 @@ import Secio from 'libp2p-secio'
 import Mplex from 'libp2p-mplex'
 import Boostrap from 'libp2p-bootstrap'
 import { SpaceClient } from '@fleekhq/space-client';
+import detectEthereumProvider from '@metamask/detect-provider';
 
 export const state = () => ({
   peerConnections: 0, // Place holder ticker to show that the LibP2P node is running
+  libp2pId: String,
+  isMetaMask: Boolean,
+  p2pNode: null,
   client: new SpaceClient({
     url: `http://0.0.0.0:9998`
   })
 })
 
 export const mutations = {
+    fetchedProvider: (state, isMetaMask) => {
+      state.isMetaMask = isMetaMask
+    },
     syncNode: (state, _libp2p) => {
-        // TODO: Bug fix, when assigning the p2pNode state to the new value it crashes the app 
-        // state.p2pNode = _libp2p;
-        // But for some reason this doesn't crash the app
-        state.peerConnections =  _libp2p.registrar.connectionManager.connections.size;
+      // TODO: Bug fix, when assigning the p2pNode state to the new value it crashes the app 
+      // state.p2pNode = _libp2p;
+      // But for some reason this doesn't crash the app
+      state.peerConnections =  _libp2p.registrar.connectionManager.connections.size;
+      state.libp2pId = _libp2p.peerId.toB58String();
     },
 
 }
 
 export const actions = {
+    fetchProvider: async ({commit}) => {
+      detectEthereumProvider().then(res => {
+        commit('fetchedProvider', res.isMetaMask)    
+      });
+    },
     // The LibP2P Node
     initLibP2P: async ({ dispatch }) => {
         const libp2p = await Libp2p.create({
@@ -86,7 +99,6 @@ export const actions = {
       commit('syncNode', libp2p)
     },
     testBucket: () => {
-
       state().client
       .createBucket({ slug: 'myNewBucket'})
       .then((res) => {
@@ -99,9 +111,33 @@ export const actions = {
         console.log(bucket.getUpdatedat());
       })
       .catch((err) => {
-        console.error(err);
+        if(err.message == "Http response at 400 or 500 level"){
+          console.log("Please connect a Space Daemon Instance");
+        } else {
+          console.error(err);
+        }
       });
 
+    },
+    fleekUserId: () => {
+      state().client
+      .getIdentityByUsername({ username: 'myUsername' })
+      .then((res) => {
+        console.log(res.getIdentity());
+      })
+      .catch((err) => {
+        if(err.message == "Not Found Error: Identity with username myUsername not found.") {
+          console.log('Username doesnt exists, creating user.');
+          state().client
+          .createUsernameAndEmail({ username: 'myUsername' })
+          .then(() => {
+            console.log('username created');
+          })
+          .catch((err) => {
+            console.error(err);
+          });
+        }
+      });
     }
     
 }

@@ -36,7 +36,8 @@
     </v-app-bar>
     <v-main>
       <v-container>
-        <nuxt />
+        <Login v-if="metaMaskConnected == false" />
+        <nuxt v-else />
       </v-container>
     </v-main>
     <v-footer
@@ -72,7 +73,7 @@ export default {
         },
         {
           icon: 'mdi-chart-bubble',
-          title: 'Publications',
+          title: 'Collection',
           to: '/collection'
         }
       ],
@@ -93,7 +94,7 @@ export default {
     },
     computed: {
       ...mapState([
-        'client'
+        'metaMaskConnected'
       ])
     },
     fetch() {
@@ -102,6 +103,7 @@ export default {
       this.initLibP2P();
       this.fetchProvider();
       this.fleekUserId();
+      this.testBucket();
     } 
 }
 </script>

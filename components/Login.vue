@@ -1,22 +1,17 @@
 <template>
-  <v-layout row wrap>
-      <v-flex >
-        <v-card>
-            <h1>Login</h1>
-            <v-btn color="success" @click="metaMaskConnected()">Connect MetaMask</v-btn>
-        </v-card>
-      </v-flex>
-  </v-layout>
+  <div>
+    <v-btn color="success" @click="metaMaskConnected()">Connect MetaMask</v-btn>
+  </div>
 </template>
 
 <script>
 import { mapMutations } from 'vuex'
 export default {
-    methods: {
-        ...mapMutations([
-            'metaMaskConnected'
-        ])
-    }
+  methods: {
+    ...mapMutations([
+      'metaMaskConnected'
+    ])
+  }
 }
 </script>
 

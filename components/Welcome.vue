@@ -1,13 +1,9 @@
 <template>
-  <div>
-    <p>Please have the following installed and running for this DApp to function.</p>
-    <ul>
-      <!-- TODO: And conditional indicators for if these are connected or not -->
-      <li>LibP2P ID: {{ libp2pId }}</li>
-      <li>Meta Mask Selected Account: </li>
-      <li>Space Daemon: </li>
-    </ul>
-  </div>
+  <v-row>
+    <v-col><v-btn color="success" to="/publisher">Publisher</v-btn></v-col>
+    <v-spacer/>
+    <v-col><v-btn color="success" to="/collector">Collector</v-btn></v-col>
+  </v-row>
 </template>
 
 <script>

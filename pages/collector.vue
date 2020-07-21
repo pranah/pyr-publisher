@@ -6,47 +6,34 @@
     <v-flex class="text-center">
       <v-row>
         <v-col>
-          <v-card>
-            <h3>Browse Published Works</h3>
-            <v-list>
-              <v-list-item>
-                Book 1: <v-btn rounded color="success">Purchase?</v-btn>
-              </v-list-item>
-              <v-list-item>
-                Book 2: <v-btn rounded color="success">Purchase?</v-btn>
-              </v-list-item>
-              <v-list-item>
-                Book 3: <v-btn rounded color="success">Purchase?</v-btn>
-              </v-list-item>
-              <v-list-item>
-                Book 4: <v-btn rounded color="success">Purchase?</v-btn>
-              </v-list-item>
-              <v-list-item>
-                Book 5: <v-btn rounded color="success">Purchase?</v-btn>
-              </v-list-item>
-              <v-list-item>
-                Book 6: <v-btn rounded color="success">Purchase?</v-btn>
-              </v-list-item>
-            </v-list>
-          </v-card>
+          <v-btn color="success" @click="collectorPageSwitchFlip()">Collection/Collect</v-btn>
         </v-col>
-        <v-col>
-          <v-card>
-            <h3>Personal Collection</h3>
-            <v-list>
-              <v-list-item>
-                Book 1: <v-btn rounded color="success">Download?</v-btn>
-              </v-list-item>
-              <v-list-item>
-                Book 2: <v-btn rounded color="success">Download?</v-btn>
-              </v-list-item>
-              <v-list-item>
-                Book 5: <v-btn rounded color="success">Download?</v-btn>
-              </v-list-item>
-            </v-list>
-          </v-card>
-        </v-col>        
+      </v-row>
+      <v-row>
+        <Collect v-if="collectorPageSwitch == false"/>
+        <Collection v-else/>
       </v-row>
     </v-flex>
   </v-layout>
 </template>
+
+<script>
+import { mapMutations, mapState } from 'vuex'
+
+export default {
+  computed: {
+    ...mapState([
+      'collectorPageSwitch'
+    ])
+  },
+  methods: {
+    ...mapMutations([
+      'collectorPageSwitchFlip'
+    ])
+  }
+}
+</script>
+
+<style>
+
+</style>

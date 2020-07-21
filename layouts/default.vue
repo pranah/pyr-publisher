@@ -5,9 +5,8 @@
       fixed
       app
     >
-      <v-btn color="success" to="/">Logo</v-btn>
-      <v-spacer/>
-      <v-toolbar-title v-text="title"/>
+      <v-btn color="success" to="/">Prana</v-btn>
+      <!-- <v-toolbar-title v-text="title"/> -->
       <v-spacer/>
       <Hud/>
     </v-app-bar>

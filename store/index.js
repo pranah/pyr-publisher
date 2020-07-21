@@ -13,7 +13,9 @@ export const state = () => ({
   metaMaskConnected: false,
   peerConnections: 0, // Place holder ticker to show that the LibP2P node is running
   libp2pId: String,
-  isMetaMask: Boolean,
+  isMetaMask: false,
+  collectorPageSwitch: false,
+  publisherPageSwitch: false,
   p2pNode: null,
   p2pPubSub: null,
   client: new SpaceClient({
@@ -32,6 +34,12 @@ export const state = () => ({
 export const mutations = {
   metaMaskConnected: (state) => {
     state.metaMaskConnected = true;
+  },
+  publisherPageSwitchFlip: (state) => {
+    state.publisherPageSwitch = !state.publisherPageSwitch;
+  },
+  collectorPageSwitchFlip: (state) => {
+    state.collectorPageSwitch = !state.collectorPageSwitch;
   },
   fetchedProvider: (state, isMetaMask) => {
     state.isMetaMask = isMetaMask

@@ -9,7 +9,7 @@
         <v-col>
           <v-card>
             <v-card-title class="headline">
-              Welcome to the NFT Book Minter
+              Welcome!
             </v-card-title>
             <v-card-text>
               <Login v-if="metaMaskConnected == false" />

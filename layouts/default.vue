@@ -19,7 +19,7 @@
       :absolute="!fixed"
       app
     >
-      <span>&copy; {{ new Date().getFullYear() }}</span>
+      <span><a href="https://mit-license.org/">MIT License {{ new Date().getFullYear() }}</a></span>
     </v-footer>
   </v-app>
 </template>

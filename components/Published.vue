@@ -1,6 +1,6 @@
 <template>
-    <v-col>
-        <v-card>
+    <v-row>
+        <v-col>       
             <h3>Published Work</h3>
             <v-list>
             <v-list-item>
@@ -13,8 +13,8 @@
                 Book 3: <v-btn rounded color="success">Download?</v-btn>
             </v-list-item>
             </v-list>
-        </v-card>
-    </v-col>
+        </v-col>
+    </v-row>    
 </template>
 
 <script>

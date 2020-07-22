@@ -13,7 +13,7 @@
                     label="Content to Publish"
                     v-model="content.file"
                 />
-                <v-btn color="success" @click="publish(content)">Publish</v-btn>
+                <v-btn color="green" @click="publish(content)">Publish</v-btn>
             </v-form>
         </v-col>
     </v-row>    

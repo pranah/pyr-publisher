@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-btn color="success" @click="metaMaskConnect()">Connect MetaMask</v-btn>
+    <v-btn color="green" @click="metaMaskConnect()">Connect MetaMask</v-btn>
   </div>
 </template>
 

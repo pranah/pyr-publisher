@@ -7,9 +7,9 @@
       <v-card>
         <v-row>
           <v-col>
-            <v-btn-toggle mandatory dense color="success">
-              <v-btn dense color="success"@click="collectorPageSwitchFlip(false)">Collect</v-btn>
-              <v-btn dense color="success"@click="collectorPageSwitchFlip(true)">Collection</v-btn>
+            <v-btn-toggle mandatory dense>
+              <v-btn dense color="green"@click="collectorPageSwitchFlip(false)">Collect</v-btn>
+              <v-btn dense color="green"@click="collectorPageSwitchFlip(true)">Collection</v-btn>
             </v-btn-toggle>
           </v-col>
         </v-row>

@@ -32,14 +32,14 @@ export const state = () => ({
 })
 
 export const mutations = {
-  metaMaskConnected: (state) => {
+  metaMaskConnect: (state) => {
     state.metaMaskConnected = true;
   },
-  publisherPageSwitchFlip: (state) => {
-    state.publisherPageSwitch = !state.publisherPageSwitch;
+  publisherPageSwitchFlip: (state, page) => {
+    state.publisherPageSwitch = page;
   },
-  collectorPageSwitchFlip: (state) => {
-    state.collectorPageSwitch = !state.collectorPageSwitch;
+  collectorPageSwitchFlip: (state, page) => {
+    state.collectorPageSwitch = page;
   },
   fetchedProvider: (state, isMetaMask) => {
     state.isMetaMask = isMetaMask

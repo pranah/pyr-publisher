@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-btn color="success" @click="metaMaskConnected()">Connect MetaMask</v-btn>
+    <v-btn color="success" @click="metaMaskConnect()">Connect MetaMask</v-btn>
   </div>
 </template>
 
@@ -9,7 +9,7 @@ import { mapMutations } from 'vuex'
 export default {
   methods: {
     ...mapMutations([
-      'metaMaskConnected'
+      'metaMaskConnect'
     ])
   }
 }

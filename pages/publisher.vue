@@ -7,7 +7,10 @@
       <v-card>
         <v-row>
           <v-col>
-            <v-btn color="success" @click="publisherPageSwitchFlip()">Publish/Published</v-btn>
+            <v-btn-toggle mandatory dense color="success">
+              <v-btn dense color="success"@click="publisherPageSwitchFlip(false)">Publish</v-btn>
+              <v-btn dense color="success"@click="publisherPageSwitchFlip(true)">Published</v-btn>
+            </v-btn-toggle>
           </v-col>
         </v-row>
         <Publish v-if="publisherPageSwitch == false"/>

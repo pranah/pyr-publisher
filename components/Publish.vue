@@ -3,17 +3,42 @@
         <v-col>  
             <h3>Publish Work</h3>
             <v-form>
-                <v-file-input multiple label="Select file to publish"></v-file-input>
-                <v-file-input multiple label="Select cover image"></v-file-input>
-                <v-btn color="success">Publish</v-btn>
+                <v-text-field 
+                    required
+                    label="Title"
+                    v-model="content.title"
+                />
+                <v-text-field 
+                    required
+                    label="Content to Publish"
+                    v-model="content.file"
+                />
+                <v-btn color="success" @click="publish(content)">Publish</v-btn>
             </v-form>
         </v-col>
     </v-row>    
 </template>
 
 <script>
-export default {
+import { mapState, mapActions } from 'vuex'
 
+export default {
+    data: () => ({
+        content: {
+            title: '',
+            file: ''
+        }
+    }),
+    computed: {
+        ...mapState([
+            
+        ])
+    },
+    methods: {
+        ...mapActions([
+            'publish'
+        ])
+    },
 }
 </script>
 

@@ -42,19 +42,14 @@ export default {
   methods: {
       ...mapActions([
         'initLibP2P',
-        'testBucket',
         'fleekUserId',
         'fetchProvider'
       ])
-    },
-
-    fetch() {
-    },
-    created() {
-      this.initLibP2P();
-      this.fetchProvider();
-      this.fleekUserId();
-      this.testBucket();
-    } 
+  },
+  created() {
+    this.initLibP2P();
+    this.fetchProvider();
+    this.fleekUserId();
+  } 
 }
 </script>

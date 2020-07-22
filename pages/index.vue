@@ -26,11 +26,11 @@
 import { mapState } from 'vuex'
 
 export default {
-    computed: {
-      ...mapState([
-        'metaMaskConnected'
-      ])
-    },
+  computed: {
+    ...mapState([
+      'metaMaskConnected'
+    ])
+  },
 }
 </script>
 

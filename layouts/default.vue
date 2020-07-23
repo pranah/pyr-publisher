@@ -93,14 +93,12 @@ export default {
   methods: {
       ...mapActions([
         'initLibP2P',
-        'fleekUserId',
         'fetchProvider'
       ])
   },
   created() {
     this.initLibP2P();
     this.fetchProvider();
-    this.fleekUserId();
   } 
 }
 </script>

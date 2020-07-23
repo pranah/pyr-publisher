@@ -21,6 +21,8 @@ export const state = () => ({
   client: new SpaceClient({
     url: `http://0.0.0.0:9998`
   }),
+  publishedContent: [],
+  collectedContent: [],
   pubsubSubs: [
     "onlineCheckIn1",
     "onlineCheckIn2",
@@ -28,7 +30,8 @@ export const state = () => ({
     "onlineCheckIn4",
     "onlineCheckIn5",
     "onlineCheckIn6"
-  ]
+  ],
+
 })
 
 export const mutations = {
@@ -45,13 +48,16 @@ export const mutations = {
     state.isMetaMask = isMetaMask
   },
   syncNode: (state, _libp2p) => {
-    // TODO: Bug fix, when assigning the p2pNode state to the new value it crashes the app 
-    // state.p2pNode = _libp2p;
-    // But for some reason this doesn't crash the app
     state.peerConnections =  _libp2p.registrar.connectionManager.connections.size;
     state.libp2pId = _libp2p.peerId.toB58String();
   },
-
+  publishContent: (state, content) => {
+    state.publishedContent.push(content);
+  },
+  collectContent: (state, content) => {
+    console.log(content.title);
+    state.collectedContent.push(content);
+  }
 }
 
 export const actions = {
@@ -64,9 +70,6 @@ export const actions = {
   initLibP2P: async ({ commit }) => {
       const libp2p = await Libp2p.create({
         addresses: {
-          // Add the signaling server address, along with our PeerId to our multiaddrs list
-          // libp2p will automatically attempt to dial to the signaling server so that it can
-          // receive inbound connections from other peers
           listen: [
             '/dns4/wrtc-star1.par.dwebops.pub/tcp/443/wss/p2p-webrtc-star',
             '/dns4/wrtc-star2.sjc.dwebops.pub/tcp/443/wss/p2p-webrtc-star'
@@ -128,27 +131,7 @@ export const actions = {
       })
 
   },
-  fleekUserId: () => {
-    state().client
-    .getIdentityByUsername({ username: 'myUsername' })
-    .then((res) => {
-      console.log(res.getIdentity());
-    })
-    .catch((err) => {
-      if(err.message == "Not Found Error: Identity with username myUsername not found.") {
-        console.log('Username doesnt exists, creating user.');
-        state().client
-        .createUsernameAndEmail({ username: 'myUsername' })
-        .then(() => {
-          console.log('username created');
-        })
-        .catch((err) => {
-          console.error(err);
-        });
-      }
-    });
-  },
-  publish: (content) => {
+  publish: ({ commit }, content) => {
     state().client
     .createBucket({ slug: content.title})
     .then((res) => {
@@ -173,6 +156,11 @@ export const actions = {
           const threadInfo = res.getThreadinfo();
           console.log('key:', threadInfo.getKey());
           console.log('addresses:', threadInfo.getAddressesList());
+          commit('publishContent', {
+            title: content.title,
+            key: threadInfo.getKey(),
+            addresses: threadInfo.getAddressesList()
+          })
         })
         .catch((err) => {
           console.error(err);

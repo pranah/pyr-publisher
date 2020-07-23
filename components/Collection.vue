@@ -1,23 +1,27 @@
 <template>
     <v-col>
         <h3>Personal Collection</h3>
-        <v-list>
+        <v-list v-for="content in collectedContent" :key="collectedContent.indexOf(content)">
             <v-list-item>
-            Book 1: <v-btn color="green">Download?</v-btn>
-            </v-list-item>
-            <v-list-item>
-            Book 2: <v-btn color="green">Download?</v-btn>
-            </v-list-item>
-            <v-list-item>
-            Book 5: <v-btn color="green">Download?</v-btn>
+                <v-row>
+                    <Content v-bind:content="content"/>                        
+                    <v-col>
+                        <v-btn color="green">Download</v-btn>
+                    </v-col>
+                </v-row>                    
             </v-list-item>
         </v-list>
     </v-col>        
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
-
+    computed: {
+        ...mapState([
+            'collectedContent'
+        ])
+    }
 }
 </script>
 

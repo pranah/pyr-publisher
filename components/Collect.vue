@@ -1,32 +1,32 @@
 <template>
     <v-col>
-        <h3>Browse Collectable Works</h3>
-        <v-list>
-            <v-list-item>
-            Book 1: <v-btn color="green">Purchase?</v-btn>
-            </v-list-item>
-            <v-list-item>
-            Book 2: <v-btn color="green">Purchase?</v-btn>
-            </v-list-item>
-            <v-list-item>
-            Book 3: <v-btn color="green">Purchase?</v-btn>
-            </v-list-item>
-            <v-list-item>
-            Book 4: <v-btn color="green">Purchase?</v-btn>
-            </v-list-item>
-            <v-list-item>
-            Book 5: <v-btn color="green">Purchase?</v-btn>
-            </v-list-item>
-            <v-list-item>
-            Book 6: <v-btn color="green">Purchase?</v-btn>
-            </v-list-item>
+        <h3>Collectable Works</h3>
+        <v-list v-for="content in publishedContent" :key="publishedContent.indexOf(content)">
+                <v-list-item>
+                    <v-row>
+                        <Content v-bind:content="content"/>                        
+                        <v-col>
+                            <v-btn color="green" @click="collectContent(content)">Buy</v-btn>
+                        </v-col>
+                    </v-row>                    
+                </v-list-item>
         </v-list>
     </v-col>
 </template>
 
 <script>
+import { mapState, mapMutations } from 'vuex'
 export default {
-
+    computed: {
+        ...mapState([
+            'publishedContent'
+        ])
+    },
+    methods: {
+        ...mapMutations([
+            'collectContent'
+        ])
+    }
 }
 </script>
 

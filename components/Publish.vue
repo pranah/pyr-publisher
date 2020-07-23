@@ -10,7 +10,7 @@
                 />
                 <v-text-field 
                     required
-                    label="Content to Publish"
+                    label="Content to Publish (file path)"
                     v-model="content.file"
                 />
                 <v-btn color="green" @click="publish(content)">Publish</v-btn>

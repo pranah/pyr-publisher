@@ -19,7 +19,7 @@ export const state = () => ({
   p2pNode: null,
   p2pPubSub: null,
   client: new SpaceClient({
-    url: `http://0.0.0.0:9998`
+    url: `http://localhost:9998`
   }),
   publishedContent: [],
   collectedContent: [],

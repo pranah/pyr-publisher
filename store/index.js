@@ -23,14 +23,7 @@ export const state = () => ({
   }),
   publishedContent: [],
   collectedContent: [],
-  pubsubSubs: [
-    "onlineCheckIn1",
-    "onlineCheckIn2",
-    "onlineCheckIn3",
-    "onlineCheckIn4",
-    "onlineCheckIn5",
-    "onlineCheckIn6"
-  ],
+  pubsubSubs: [],
 
 })
 

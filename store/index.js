@@ -14,36 +14,43 @@ export const state = () => ({
   peerConnections: 0, // Place holder ticker to show that the LibP2P node is running
   libp2pId: String,
   isMetaMask: Boolean,
+  collectorPageSwitch: false,
+  publisherPageSwitch: false,
   p2pNode: null,
   p2pPubSub: null,
   client: new SpaceClient({
-    url: `http://0.0.0.0:9998`
+    url: `http://localhost:9998`
   }),
-  pubsubSubs: [
-    "onlineCheckIn1",
-    "onlineCheckIn2",
-    "onlineCheckIn3",
-    "onlineCheckIn4",
-    "onlineCheckIn5",
-    "onlineCheckIn6"
-  ]
+  publishedContent: [],
+  collectedContent: [],
+  pubsubSubs: [],
+
 })
 
 export const mutations = {
-  metaMaskConnected: (state) => {
+  metaMaskConnect: (state) => {
     state.metaMaskConnected = true;
+  },
+  publisherPageSwitchFlip: (state, page) => {
+    state.publisherPageSwitch = page;
+  },
+  collectorPageSwitchFlip: (state, page) => {
+    state.collectorPageSwitch = page;
   },
   fetchedProvider: (state, isMetaMask) => {
     state.isMetaMask = isMetaMask
   },
   syncNode: (state, _libp2p) => {
-    // TODO: Bug fix, when assigning the p2pNode state to the new value it crashes the app 
-    // state.p2pNode = _libp2p;
-    // But for some reason this doesn't crash the app
     state.peerConnections =  _libp2p.registrar.connectionManager.connections.size;
     state.libp2pId = _libp2p.peerId.toB58String();
   },
-
+  publishContent: (state, content) => {
+    state.publishedContent.push(content);
+  },
+  collectContent: (state, content) => {
+    console.log(content.title);
+    state.collectedContent.push(content);
+  }
 }
 
 export const actions = {
@@ -56,9 +63,6 @@ export const actions = {
   initLibP2P: async ({ commit }) => {
       const libp2p = await Libp2p.create({
         addresses: {
-          // Add the signaling server address, along with our PeerId to our multiaddrs list
-          // libp2p will automatically attempt to dial to the signaling server so that it can
-          // receive inbound connections from other peers
           listen: [
             '/dns4/wrtc-star1.par.dwebops.pub/tcp/443/wss/p2p-webrtc-star',
             '/dns4/wrtc-star2.sjc.dwebops.pub/tcp/443/wss/p2p-webrtc-star'
@@ -120,17 +124,41 @@ export const actions = {
       })
 
   },
-  testBucket: () => {
+  publish: ({ commit }, content) => {
     state().client
-    .createBucket({ slug: 'myNewBucket'})
+    .createBucket({ slug: content.title})
     .then((res) => {
-      const bucket = res.getBucket();
-
-      console.log(bucket.getKey());
-      console.log(bucket.getName());
-      console.log(bucket.getPath());
-      console.log(bucket.getCreatedat());
-      console.log(bucket.getUpdatedat());
+      const stream = state().client.addItems({
+        bucket: content.title,
+        targetPath: '/', // path in the bucket to be saved
+        sourcePaths: [content.file]
+      });
+    
+      stream.on('data', (data) => {
+        console.log('data: ', data);
+      });
+    
+      stream.on('error', (error) => {
+        console.error('error: ', error);
+      });
+    
+      stream.on('end', () => {
+        state().client
+        .shareBucket({ bucket: content.title })
+        .then((res) => {
+          const threadInfo = res.getThreadinfo();
+          console.log('key:', threadInfo.getKey());
+          console.log('addresses:', threadInfo.getAddressesList());
+          commit('publishContent', {
+            title: content.title,
+            key: threadInfo.getKey(),
+            addresses: threadInfo.getAddressesList()
+          })
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+      });
     })
     .catch((err) => {
       if(err.message == "Http response at 400 or 500 level"){
@@ -139,27 +167,24 @@ export const actions = {
         console.error(err);
       }
     });
-
   },
-  fleekUserId: () => {
-    state().client
-    .getIdentityByUsername({ username: 'myUsername' })
-    .then((res) => {
-      console.log(res.getIdentity());
-    })
-    .catch((err) => {
-      if(err.message == "Not Found Error: Identity with username myUsername not found.") {
-        console.log('Username doesnt exists, creating user.');
-        state().client
-        .createUsernameAndEmail({ username: 'myUsername' })
-        .then(() => {
-          console.log('username created');
-        })
-        .catch((err) => {
-          console.error(err);
-        });
-      }
+  getContent: async ({}, content) => {
+    console.log(content.title);
+    const bucket = content.title;
+  
+    const dirRes = await state().client.listDirectories({
+      bucket,
     });
+  
+    const entriesList = dirRes.getEntriesList();
+  
+    const openFileRes = await state().client.openFile({
+      bucket,
+      path: entriesList[0].getPath(),
+    });
+  
+    const location = openFileRes.getLocation();
+    console.log(location); // "/path/to/the/copied/file"
   }
     
 }

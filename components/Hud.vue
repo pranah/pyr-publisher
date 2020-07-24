@@ -1,7 +1,12 @@
 <template>
-    <div>
-        <h3>LibP2Peers: {{ peerConnections }}</h3>
-    </div>
+  <v-layout row wrap>
+    <v-flex >
+      <v-row>
+        <v-col>ETH Block Height: (WIP)</v-col>
+        <v-col>LibP2Peers: {{ peerConnections }}</v-col>
+      </v-row>
+    </v-flex>
+  </v-layout>
 </template>
 
 <script>

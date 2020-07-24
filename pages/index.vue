@@ -2,16 +2,18 @@
   <v-layout
     justify-center
     align-center
+    column
   >
     <v-flex>
       <v-row>
         <v-col>
           <v-card>
             <v-card-title class="headline">
-              Welcome to the NFT Book Minter
+              Welcome!
             </v-card-title>
             <v-card-text>
-              <Welcome/>
+              <Login v-if="metaMaskConnected == false" />
+              <Welcome v-else/>
             </v-card-text>
           </v-card>
         </v-col>
@@ -21,8 +23,14 @@
 </template>
 
 <script>
-export default {
+import { mapState } from 'vuex'
 
+export default {
+  computed: {
+    ...mapState([
+      'metaMaskConnected'
+    ])
+  },
 }
 </script>
 

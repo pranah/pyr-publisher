@@ -6,7 +6,7 @@
                 <v-row>
                     <Content v-bind:content="content"/>                        
                     <v-col>
-                        <v-btn color="green">Download</v-btn>
+                        <v-btn color="green" @click="getContent(content)">Download</v-btn>
                     </v-col>
                 </v-row>                    
             </v-list-item>
@@ -15,11 +15,16 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 export default {
     computed: {
         ...mapState([
             'collectedContent'
+        ])
+    },
+    methods: {
+        ...mapActions([
+            'getContent'
         ])
     }
 }

@@ -167,6 +167,24 @@ export const actions = {
         console.error(err);
       }
     });
+  },
+  getContent: async ({}, content) => {
+    console.log(content.title);
+    const bucket = content.title;
+  
+    const dirRes = await state().client.listDirectories({
+      bucket,
+    });
+  
+    const entriesList = dirRes.getEntriesList();
+  
+    const openFileRes = await state().client.openFile({
+      bucket,
+      path: entriesList[0].getPath(),
+    });
+  
+    const location = openFileRes.getLocation();
+    console.log(location); // "/path/to/the/copied/file"
   }
     
 }

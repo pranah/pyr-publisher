@@ -13,6 +13,7 @@
             </v-card-title>
             <v-card-text>
               <Login v-if="metaMaskConnected == false" />
+              <!-- <Login v-if="ethConnected == false" /> -->
               <Welcome v-else/>
             </v-card-text>
           </v-card>
@@ -29,7 +30,10 @@ export default {
   computed: {
     ...mapState([
       'metaMaskConnected'
-    ])
+    ]),
+    // ...mapState({
+    //   ethConnected: 'web3/ethConnected',    
+    // })
   },
 }
 </script>

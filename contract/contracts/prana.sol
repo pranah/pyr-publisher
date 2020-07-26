@@ -17,7 +17,7 @@ contract prana is ERC721 {
     Counters.Counter private _tokenIdTracker;
 
     //AccessControl and Ownable can be added instead of owner if time permits
-    constructor() ERC721("PranaBooks", "PTN") public {
+    constructor() ERC721("PranaBooks", "PBT") public {
         owner = msg.sender;
     }
 
@@ -91,7 +91,7 @@ contract prana is ERC721 {
 
 
     //Event to emit when a new book is published with its ISBN and publisher address
-    event BookPublished(address indexed publisher, uint256 indexed isbn, uint256 indexed price);
+    event BookPublished(address indexed publisher, uint256 indexed isbn, string indexed bookCoverAndDetails);
 
     //Event to emit when a tokenOwner puts out a token for sale
     event TokenForSale(uint256 indexed resalePrice, uint256 indexed isbn, uint256 indexed tokenId);
@@ -138,6 +138,7 @@ contract prana is ERC721 {
         uint256 _transactionCut)
         public {
         require(booksInfo[_isbn].publisherAddress==address(0), "This book has already been published!");
+        require(_transactionCut > 0 && _transactionCut < 80, "Your cut can't be more than 80% of the total");
         booksInfo[_isbn].encryptedBookDataHash = _encryptedBookDataHash;
         booksInfo[_isbn].publisherAddress = msg.sender;
         booksInfo[_isbn].bookPrice = _price;
@@ -146,7 +147,8 @@ contract prana is ERC721 {
         booksInfo[_isbn].bookSales = 0;
 
         //event that serves as an advertisement
-        emit BookPublished(msg.sender, _isbn, _price);
+        //last argument might be needed to change back to price
+        emit BookPublished(msg.sender, _isbn, _unencryptedBookDetailsCID);
 
     }
 
@@ -285,10 +287,10 @@ contract prana is ERC721 {
         return accountBalance[msg.sender];
     }
 
-    //function to get book details with the isbn
+    //function to get book details with the tokenId
     //returns CID of coverpic+bookname
-    function viewBookDetails(uint256 _isbn) public view returns (string memory) {
-        require(booksInfo[_isbn].publisherAddress!=address(0), "This book is not on the platform");
-        return booksInfo[_isbn].unencryptedBookDetailsCID;
+    function viewTokenBookDetails(uint256 _tokenId) public view returns (string memory) {
+        require(booksInfo[tokenData[_tokenId].isbn].publisherAddress!=address(0), "This book is not on the platform");
+        return booksInfo[tokenData[_tokenId].isbn].unencryptedBookDetailsCID;
     }
 }

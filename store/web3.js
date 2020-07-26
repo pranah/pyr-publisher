@@ -85,6 +85,23 @@ export const actions = {
         commit('updateContract', {contractAddress, contractAbi})
         commit('contractInstance', prana)
 
+
+        prana.methods.publishBook("abc", 789, 50, "def", 10)
+        .send({ from: accounts[0], gas : 6000000 })
+        .then((receipt) => {
+            console.log(receipt)
+        })
+        .then(() => {
+            prana.getPastEvents('BookPublished',{
+                filter:{publisher:state.currentAccount},
+                 fromBlock:0,
+                 toBlock:'latest'
+                },(err,events)=>{
+                    console.log("====>events",events)
+                })
+        }).catch(err => console.log("bookpublish error"))
+        
+
     } else if (window.web3) {
       // Legacy dapp browsers…
       window.web3 = new Web3(web3.currentProvider);

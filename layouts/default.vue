@@ -37,7 +37,6 @@
       app
     >
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-      <!-- <v-toolbar-title v-text="title"/> -->
       <v-spacer/>
       <Hud/>
     </v-app-bar>
@@ -59,7 +58,6 @@
 import { mapState, mapActions } from 'vuex'
 
 export default {
-
   data () {
     return {
       clipped: false,

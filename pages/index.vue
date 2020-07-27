@@ -29,11 +29,14 @@ import { mapState } from 'vuex'
 export default {
   computed: {
     ...mapState([
-      'metaMaskConnected'
+      'metaMaskConnected',
     ]),
-    // ...mapState({
-    //   ethConnected: 'web3/ethConnected',    
-    // })
+    ...mapState({
+      // ethConnected: 'web3/ethConnected',   
+    }),
+    created() {
+      console.log("is ETH: ");
+    }
   },
 }
 </script>

@@ -1,7 +1,6 @@
 import Web3 from 'web3';
 import detectEthereumProvider from '@metamask/detect-provider';
 import contractJson from "../contract/build/contracts/prana.json";
-import { getWeb3 } from "../util/getWeb3.js";
 
 export const state = () => ({
 //   eth: null,
@@ -10,8 +9,8 @@ export const state = () => ({
   currentAccount: null,
   contractAddress: String,
   contractAbi: null,
-  prana: null
-//   web3: null
+  prana: null,
+  web3: null
 
 })
 
@@ -60,55 +59,17 @@ export const mutations = {
 }
 
 export const actions = { 
-
   // connecting to ethereum
   initEth: async({dispatch, commit}) => {
-    console.log('executing initEth action...')
-    //  getWeb3.then(result => {
-    //      console.log("commiting update account")
-    //      commit('updateAccountDetails', result.account)
-    //  })
-    if (window.ethereum) {
-        
-        // Request account access if needed
+    if (window.ethereum) {        
+        // Request account access 
         const accounts = await ethereum.enable()
         commit('updateAccountDetails', accounts[0])
         web3 = new Web3(window.ethereum)
-        let contractAddress = contractJson.networks['5777'].address
-        let contractAbi = contractJson.abi
-        let prana = new web3.eth.Contract(contractAbi, contractAddress)
-        // console.log(contractAddress)
-        // console.log(contractAbi)
-        // console.log(prana)
-        // console.log(web3)
-
-        commit('updateContract', {contractAddress, contractAbi})
-        commit('contractInstance', prana)
-
-
-        prana.methods.publishBook("abc", 789, 50, "def", 10)
-        .send({ from: accounts[0], gas : 6000000 })
-        .then((receipt) => {
-            console.log(receipt)
-        })
-        .then(() => {
-            prana.getPastEvents('BookPublished',{
-                filter:{publisher:state.currentAccount},
-                 fromBlock:0,
-                 toBlock:'latest'
-                },(err,events)=>{
-                    console.log("====>events",events)
-                })
-        }).catch(err => console.log("bookpublish error"))
-        
-
-    } else if (window.web3) {
-      // Legacy dapp browsers…
-      window.web3 = new Web3(web3.currentProvider);
     } else {
       // Non-dapp browsers…
       console.log(
-        'Non-Ethereum browser detected.'
+        'Please install MetaMask'
       );
     }
   },

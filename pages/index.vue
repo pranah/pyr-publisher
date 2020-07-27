@@ -13,7 +13,6 @@
             </v-card-title>
             <v-card-text>
               <Login v-if="currentAccount == null" />
-              <!-- <Login v-if="ethConnected == false" /> -->
               <Welcome v-else/>
             </v-card-text>
           </v-card>
@@ -30,9 +29,7 @@ export default {
   computed: {
     ...mapState([
       'currentAccount'
-    ]),
-    created() {
-    }
+    ])
   },
 }
 </script>

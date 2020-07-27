@@ -55,15 +55,7 @@ export default {
         console.log(libp2p);
         await libp2p.start()
         commit('syncNode', libp2p)
-        console.log(`libp2p id is ${libp2p.peerId.toB58String()}`)
-
-        for (let i =0; i < state().pubsubSubs.length; i++) {
-        await libp2p.pubsub.subscribe(state().pubsubSubs[i], (msg) => {
-            if (msg.from != libp2p.peerId.toB58String()) {
-            console.log(msg.data.toString())
-            }
-        })
-        }
+        console.log(`libp2p id is ${libp2p.peerId.toB58String()}`);
         
         // Listen for new peers
         libp2p.on('peer:discovery', (peerId) => {

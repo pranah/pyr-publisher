@@ -13,7 +13,7 @@
                     label="Content to Publish (file path)"
                     v-model="content.file"
                 />
-                <v-btn color="green" @click="publish(content)">Publish</v-btn>
+                <v-btn color="green" @click="publish(content, prana)">Publish</v-btn>
             </v-form>
         </v-col>
     </v-row>    
@@ -31,7 +31,7 @@ export default {
     }),
     computed: {
         ...mapState([
-            
+            'prana'
         ])
     },
     methods: {

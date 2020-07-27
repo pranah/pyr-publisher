@@ -1,10 +1,11 @@
 import Web3 from 'web3';
-import state from './index.js';
 
 export default {
     setWeb3: (state, provider) => {
         state.web3 = new Web3(provider)
+        state.prana = new state.web3.eth.Contract(state.contractAbi, state.contractAddress);
         console.log(state.web3);
+        console.log(state.prana);
     },
     publisherPageSwitchFlip: (state, page) => {
         state.publisherPageSwitch = page;

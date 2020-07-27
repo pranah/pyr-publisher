@@ -7,9 +7,8 @@ import Mplex from 'libp2p-mplex'
 import Boostrap from 'libp2p-bootstrap'
 import Gossipsub from 'libp2p-gossipsub';
 import detectEthereumProvider from '@metamask/detect-provider';
-import contractJson from "../contract/build/contracts/prana.json";
 
-import state from './index.js';
+import store from './index.js';
 
 export default {
     fetchProvider: async ({commit}) => {
@@ -77,10 +76,10 @@ export default {
         })
     },
     publish: ({ commit }, content) => {
-        state().client
+        store.state().client
         .createBucket({ slug: content.title})
         .then((res) => {
-            const stream = state().client.addItems({
+            const stream = store.state().client.addItems({
             bucket: content.title,
             targetPath: '/', // path in the bucket to be saved
             sourcePaths: [content.file]
@@ -95,9 +94,11 @@ export default {
             });
         
             stream.on('end', () => {
-            state().client
+            store.state().client
             .shareBucket({ bucket: content.title })
             .then((res) => {
+
+                console.log(store.state().prana);
                 const threadInfo = res.getThreadinfo();
                 console.log('key:', threadInfo.getKey());
                 console.log('addresses:', threadInfo.getAddressesList());
@@ -143,7 +144,6 @@ export default {
             // Request account access 
             const accounts = await ethereum.enable()
             commit('updateAccountDetails', accounts[0])
-            web3 = new Web3(window.ethereum)
         } else {
           // Non-dapp browsers…
           console.log(

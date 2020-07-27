@@ -1,4 +1,5 @@
 import { SpaceClient } from '@fleekhq/space-client';
+import contractJson from "../contract/build/contracts/prana.json";
 
 export default {    
     peerConnections: 0, // Place holder ticker to show that the LibP2P node is running
@@ -19,7 +20,7 @@ export default {
     currentChainId: String,
     currentAccount: null,
     contractAddress: String,
-    contractAbi: null,
+    contractAbi: contractJson.abi,
     prana: null
       
 }

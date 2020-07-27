@@ -19,7 +19,7 @@ export default {
         state.isMetaMask = isMetaMask
     },
     syncNode: (state, _libp2p) => {
-        state.p2pNode = _libp2p;
+        // state.p2pNode = _libp2p;
         state.peerConnections =  _libp2p.registrar.connectionManager.connections.size;
         state.libp2pId = _libp2p.peerId.toB58String();
     },

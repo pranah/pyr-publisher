@@ -6,9 +6,6 @@ export default {
         state.web3 = new Web3(provider)
         console.log(state.web3);
     },
-    metaMaskConnect: (state) => {
-        state.metaMaskConnected = true;
-    },
     publisherPageSwitchFlip: (state, page) => {
         state.publisherPageSwitch = page;
     },
@@ -16,7 +13,7 @@ export default {
         state.collectorPageSwitch = page;
     },
     fetchedProvider: (state, isMetaMask) => {
-        state.isMetaMask = isMetaMask
+        state.isMetaMaskProvided = isMetaMask
     },
     syncNode: (state, _libp2p) => {
         // state.p2pNode = _libp2p;
@@ -35,7 +32,6 @@ export default {
         console.log('commiting initEth mutation...')
         state.currentChainId = ethereum.chainId
         state.eth = window.ethereum
-        state.ethConnected = true
         // state.web3 = new Web3(window.ethereum);
         // console.log(state.web3)
     

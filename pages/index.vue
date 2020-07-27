@@ -12,7 +12,7 @@
               Welcome!
             </v-card-title>
             <v-card-text>
-              <Login v-if="metaMaskConnected == false" />
+              <Login v-if="currentAccount == null" />
               <!-- <Login v-if="ethConnected == false" /> -->
               <Welcome v-else/>
             </v-card-text>
@@ -29,13 +29,9 @@ import { mapState } from 'vuex'
 export default {
   computed: {
     ...mapState([
-      'metaMaskConnected',
+      'currentAccount'
     ]),
-    ...mapState({
-      // ethConnected: 'web3/ethConnected',   
-    }),
     created() {
-      console.log("is ETH: ");
     }
   },
 }

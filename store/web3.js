@@ -77,29 +77,42 @@ export const actions = {
         let contractAddress = contractJson.networks['5777'].address
         let contractAbi = contractJson.abi
         let prana = new web3.eth.Contract(contractAbi, contractAddress)
-        // console.log(contractAddress)
-        // console.log(contractAbi)
-        // console.log(prana)
-        // console.log(web3)
 
         commit('updateContract', {contractAddress, contractAbi})
-        commit('contractInstance', prana)
 
 
-        prana.methods.publishBook("abc", 789, 50, "def", 10)
-        .send({ from: accounts[0], gas : 6000000 })
-        .then((receipt) => {
-            console.log(receipt)
-        })
-        .then(() => {
-            prana.getPastEvents('BookPublished',{
-                filter:{publisher:state.currentAccount},
-                 fromBlock:0,
-                 toBlock:'latest'
-                },(err,events)=>{
-                    console.log("====>events",events)
+        await prana.methods.publishBook("abc", 555, 1, "def", 10)
+          .send({ from: accounts[0], gas : 6000000 })
+          .on('BookPublished', (event) => {
+                console.log(event)
                 })
-        }).catch(err => console.log("bookpublish error"))
+          .then((receipt) => {
+              console.log(receipt)
+            })
+          .then(() => {
+            prana.getPastEvents('BookPublished',{
+            filter:{publisher:state.currentAccount},
+            fromBlock:0,
+            toBlock:'latest'
+            },(err,events)=>{
+              console.log("====>events",events)
+              })
+            })
+          .catch(err => console.log('publish book error'))
+
+        await prana.methods.directPurchase(555)
+          .send({ from: accounts[0], gas: 6000000, value: web3.utils.toWei(web3.utils.toBN(1), 'ether') })
+          .on('transactionHash', (hash) => {
+            console.log("Minting is Successful !")
+            console.log(hash)
+            })
+          .on('error', (error) => {
+            console.log(error);
+            })
+          .then((receipt) => {
+              console.log(receipt)
+            })
+        
         
 
     } else if (window.web3) {

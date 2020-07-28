@@ -27,12 +27,12 @@ import { mapMutations, mapState } from 'vuex'
 
 export default {
   computed: {
-    ...mapState([
+    ...mapState('fleek',[
       'collectorPageSwitch'
     ])
   },
   methods: {
-    ...mapMutations([
+    ...mapMutations('fleek',[
       'collectorPageSwitchFlip'
     ])
   }

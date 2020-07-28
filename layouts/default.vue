@@ -89,10 +89,10 @@ export default {
     }
   },
   methods: {
-      ...mapActions([
-        'initLibP2P',
-        'fetchProvider'
-      ])
+      ...mapActions({
+        initLibP2P: 'libp2p/initLibP2P',
+        fetchProvider: 'web3/fetchProvider'
+      })
   },
   created() {
     this.initLibP2P();

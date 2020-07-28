@@ -13,7 +13,28 @@
                     label="Content to Publish (file path)"
                     v-model="content.file"
                 />
-                <v-btn color="green" @click="publish(content, prana)">Publish</v-btn>
+                <v-text-field 
+                    type="number" 
+                    min="0" 
+                    max="999999" 
+                    label="ISBN"
+                    v-model="content.isbn"
+                />
+                <v-text-field 
+                    type="number"
+                    min="0" 
+                    max="999999" 
+                    label="Price"
+                    v-model="content.price"
+                />
+                <v-text-field 
+                    type="number" 
+                    min="0" 
+                    max="999999" 
+                    label="Secondhand transaction cut"
+                    v-model="content.transactionCut"
+                />
+                <v-btn color="green" @click="publish(content)">Publish</v-btn>
             </v-form>
         </v-col>
     </v-row>    
@@ -26,16 +47,22 @@ export default {
     data: () => ({
         content: {
             title: '',
-            file: ''
+            file: '',
+            isbn: 0,
+            price: 0,
+            transactionCut: 0
         }
     }),
     computed: {
-        ...mapState([
+        ...mapState('fleek',[
+            'client'
+        ]),
+        ...mapState('web3', [
             'prana'
         ])
     },
     methods: {
-        ...mapActions([
+        ...mapActions('web3',[
             'publish'
         ])
     },

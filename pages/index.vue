@@ -12,8 +12,8 @@
               Welcome!
             </v-card-title>
             <v-card-text>
-              <Login v-if="currentAccount == null" />
-              <Welcome v-else/>
+              <Welcome v-if="currentAccount != null"/>
+              <Login v-else />              
             </v-card-text>
           </v-card>
         </v-col>
@@ -27,7 +27,7 @@ import { mapState } from 'vuex'
 
 export default {
   computed: {
-    ...mapState([
+    ...mapState('web3', [
       'currentAccount'
     ])
   },

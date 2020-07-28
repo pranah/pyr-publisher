@@ -24,8 +24,10 @@ export default {
             console.log(state.publishedContent);
         },
         collectContent: (state, content) => {
-            console.log(content.title);
+            // console.log(content.title);
             state.collectedContent.push(content);
+            console.log(state.collectedContent);
+
         },
         collectableContent: (state, contentList) => {
             state.collectableContent = contentList;

@@ -15,15 +15,20 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex'
+import { mapState, mapMutations, mapActions } from 'vuex'
 export default {
     computed: {
         ...mapState("fleek",[
             'collectableContent'
         ])
     },
+    // methods: {
+    //     ...mapMutations([
+    //         'collectContent'
+    //     ])
+    // }
     methods: {
-        ...mapMutations([
+        ...mapActions('web3', [
             'collectContent'
         ])
     }

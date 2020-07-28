@@ -20,16 +20,16 @@
       "type": "function"
     }
   ],
-  "metadata": "{\"compiler\":{\"version\":\"0.6.12+commit.27d51765\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"tokenid\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"_tokenRecipient\",\"type\":\"address\"}],\"name\":\"buyToken\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"/home/mansoor/Documents/pyr-publisher/contract/contracts/pranaHelper.sol\":\"PranaInterface\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"/home/mansoor/Documents/pyr-publisher/contract/contracts/pranaHelper.sol\":{\"keccak256\":\"0xc6be38b3dee1f1c79096e8d5cdfb6470ff5684898034b6cc4b51d0d84cbbddb9\",\"license\":\"ISC\",\"urls\":[\"bzz-raw://4d1c65b2ecf8e99dcd243ae27b6f8445445bc0998c32f699f51f8479063e4603\",\"dweb:/ipfs/QmVM8F6SrCnChvB2LZLycEbKoGTN4Sn1debUccPa7qN15j\"]}},\"version\":1}",
-  "bytecode": "0x6080604052348015600f57600080fd5b5060a68061001e6000396000f3fe608060405260043610601c5760003560e01c80639134709e146021575b600080fd5b606a60048036036040811015603557600080fd5b8101908080359060200190929190803573ffffffffffffffffffffffffffffffffffffffff169060200190929190505050606c565b005b505056fea2646970667358221220d13d89b7c92048f64e60a6d32266c9d88f09786fefb8ba19482a595d7518263164736f6c634300060c0033",
-  "deployedBytecode": "0x608060405260043610601c5760003560e01c80639134709e146021575b600080fd5b606a60048036036040811015603557600080fd5b8101908080359060200190929190803573ffffffffffffffffffffffffffffffffffffffff169060200190929190505050606c565b005b505056fea2646970667358221220d13d89b7c92048f64e60a6d32266c9d88f09786fefb8ba19482a595d7518263164736f6c634300060c0033",
+  "metadata": "{\"compiler\":{\"version\":\"0.6.12+commit.27d51765\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"tokenid\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"_tokenRecipient\",\"type\":\"address\"}],\"name\":\"buyToken\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"/Users/user/Desktop/pyr-publisher/contract/contracts/pranaHelper.sol\":\"PranaInterface\"},\"evmVersion\":\"istanbul\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"/Users/user/Desktop/pyr-publisher/contract/contracts/pranaHelper.sol\":{\"keccak256\":\"0xc6be38b3dee1f1c79096e8d5cdfb6470ff5684898034b6cc4b51d0d84cbbddb9\",\"license\":\"ISC\",\"urls\":[\"bzz-raw://4d1c65b2ecf8e99dcd243ae27b6f8445445bc0998c32f699f51f8479063e4603\",\"dweb:/ipfs/QmVM8F6SrCnChvB2LZLycEbKoGTN4Sn1debUccPa7qN15j\"]}},\"version\":1}",
+  "bytecode": "0x6080604052348015600f57600080fd5b5060a68061001e6000396000f3fe608060405260043610601c5760003560e01c80639134709e146021575b600080fd5b606a60048036036040811015603557600080fd5b8101908080359060200190929190803573ffffffffffffffffffffffffffffffffffffffff169060200190929190505050606c565b005b505056fea26469706673582212200d7169f33524aa7c71c09bd5e44cc2a5d1a060193f5a05576a94290239ccb3ee64736f6c634300060c0033",
+  "deployedBytecode": "0x608060405260043610601c5760003560e01c80639134709e146021575b600080fd5b606a60048036036040811015603557600080fd5b8101908080359060200190929190803573ffffffffffffffffffffffffffffffffffffffff169060200190929190505050606c565b005b505056fea26469706673582212200d7169f33524aa7c71c09bd5e44cc2a5d1a060193f5a05576a94290239ccb3ee64736f6c634300060c0033",
   "immutableReferences": {},
   "sourceMap": "59:107:2:-:0;;;;;;;;;;;;;;;;;;;",
   "deployedSourceMap": "59:107:2:-:0;;;;;;;;;;;;;;;;;;;;;88:76;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::i;:::-;;;;;:::o",
   "source": "// SPDX-License-Identifier: ISC\n\npragma solidity ^0.6.0;\n\n\ncontract PranaInterface{\n    function buyToken(uint256 tokenid, address _tokenRecipient) public payable{}\n}\n\ncontract pranaHelper {\n\n\n    constructor () public {\n        owner = msg.sender;\n    }\n\n    //address of the contract deployer.\n    address owner;\n\n    //address of the prana contract\n    address pranaAddress;\n\n    //Modifier for onlyOwner functions\n    modifier onlyOwner {\n       require(msg.sender == owner, 'You are not the contract owner to call this function!');\n       _;\n    }\n\n    function setPranaAddress(address _pranaAddress) public onlyOwner{\n        pranaAddress = _pranaAddress;\n    }\n\n    function buyTokenFromPrana(uint tokenId) public payable{\n        PranaInterface P = PranaInterface(pranaAddress);\n        P.buyToken{value:msg.value}(tokenId, msg.sender);\n    }\n\n}",
-  "sourcePath": "/home/mansoor/Documents/pyr-publisher/contract/contracts/pranaHelper.sol",
+  "sourcePath": "/Users/user/Desktop/pyr-publisher/contract/contracts/pranaHelper.sol",
   "ast": {
-    "absolutePath": "/home/mansoor/Documents/pyr-publisher/contract/contracts/pranaHelper.sol",
+    "absolutePath": "/Users/user/Desktop/pyr-publisher/contract/contracts/pranaHelper.sol",
     "exportedSymbols": {
       "PranaInterface": [
         915
@@ -941,7 +941,7 @@
     "src": "33:820:2"
   },
   "legacyAST": {
-    "absolutePath": "/home/mansoor/Documents/pyr-publisher/contract/contracts/pranaHelper.sol",
+    "absolutePath": "/Users/user/Desktop/pyr-publisher/contract/contracts/pranaHelper.sol",
     "exportedSymbols": {
       "PranaInterface": [
         915
@@ -1857,8 +1857,8 @@
     "version": "0.6.12+commit.27d51765.Emscripten.clang"
   },
   "networks": {},
-  "schemaVersion": "3.2.3",
-  "updatedAt": "2020-07-28T09:26:18.627Z",
+  "schemaVersion": "3.2.0",
+  "updatedAt": "2020-07-28T12:40:58.079Z",
   "devdoc": {
     "kind": "dev",
     "methods": {},

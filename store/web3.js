@@ -47,15 +47,12 @@ export default {
             if (window.ethereum) {        
                 // Request account access 
                 const accounts = await ethereum.enable()
-                commit('updateAccountDetails', accounts[0])
-                
+                commit('updateAccountDetails', accounts[0])    
             } else {
               // Non-dapp browsers…
               console.log(
                 'Please install MetaMask'
               );
-
-
             }
         },
         publish: async ({state}, content) => {
@@ -102,6 +99,25 @@ export default {
                     commit('fleek/collectableContent', events, { root: true })
                 })
         },
-        
-    }
+        collectContent: async ({state, commit}, content) => {
+          console.log(content.returnValues.price)
+          let price = content.returnValues.price
+          await state.pranaContract.methods.directPurchase(content.returnValues.isbn)
+              .send({ from: state.currentAccount, gas: 6000000, value: state.web3.utils.toWei(content.returnValues.price, 'ether') })
+              .on('transactionHash', (hash) => {
+                console.log("Minting is Successful !")
+                console.log(hash)
+                })
+              .on('error', (error) => {
+                console.log(error);
+                })
+              .then((receipt) => {
+                  console.log(receipt)
+                  console.log(receipt.events.Transfer.returnValues.tokenId)
+                  let tokenId = receipt.events.Transfer.returnValues.tokenId
+                  commit('fleek/collectContent', {content, tokenId}, { root: true })
+                })            
+        },
+           
+    } 
 }

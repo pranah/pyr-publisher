@@ -2,6 +2,7 @@
     <v-row>
         <v-col>       
             <h3>Published Work: {{ publishedContent.length }}</h3>
+            <v-btn color="green" @click="myPublished()">Refresh List</v-btn>
             <v-list v-for="content in publishedContent" :key="publishedContent.indexOf(content)">
                 <v-list-item>
                     <Content v-bind:content="content"/>
@@ -12,12 +13,17 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 
 export default {
     computed: {
         ...mapState("fleek",[
             'publishedContent'
+        ])
+    },
+    methods: {
+        ...mapActions('web3', [
+            'myPublished'
         ])
     }
 }

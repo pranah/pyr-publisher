@@ -18,8 +18,9 @@ export default {
         collectorPageSwitchFlip: (state, page) => {
             state.collectorPageSwitch = page;
         },
-        publishContent: (state, content) => {
-            state.publishedContent.push(content);
+        publishedContent: (state, contentList) => {
+            state.publishedContent = contentList;
+            console.log(state.publishedContent);
         },
         collectContent: (state, content) => {
             console.log(content.title);

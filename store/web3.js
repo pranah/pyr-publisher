@@ -78,6 +78,16 @@ export default {
                 })
             })
             .catch(err => console.log('Publishing Error'))
+        },
+        myPublished: async ({state, commit}) => {
+            await state.pranaContract.getPastEvents('BookPublished',{
+                filter:{publisher:state.currentAccount},
+                fromBlock:0,
+                toBlock:'latest'
+                },(err,events)=>{
+                    console.log("====>events",events)
+                    commit('fleek/publishedContent', events, { root: true })
+                })
         }
     }
 }

@@ -1,6 +1,6 @@
 <template>
     <v-col>
-        {{content.title}}
+        {{content.returnValues.isbn}}
     </v-col>
 </template>
 

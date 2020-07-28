@@ -8,7 +8,6 @@ import Boostrap from 'libp2p-bootstrap'
 import Gossipsub from 'libp2p-gossipsub';
 
 export default {
-    // strict: false,
     state: () => ({
         p2pNode: null,
         // p2pPubSub: null,

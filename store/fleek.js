@@ -10,6 +10,7 @@ export default {
         }),
         publishedContent: [],
         collectedContent: [],
+        collectableContent: []
     }),
     mutations: {
         publisherPageSwitchFlip: (state, page) => {
@@ -26,6 +27,10 @@ export default {
             console.log(content.title);
             state.collectedContent.push(content);
         },
+        collectableContent: (state, contentList) => {
+            state.collectableContent = contentList;
+            console.log(state.collectableContent);
+        }
     },
     actions: {
         publish: ({ state, commit }, content) => {

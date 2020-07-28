@@ -31,7 +31,7 @@ export default {
         },
     },
     actions: {
-        fetchProvider: async ({state, commit}) => {
+        fetchProvider: async ({state, commit, dispatch}) => {
             detectEthereumProvider().then(res => {
                 commit('fetchedProvider', res.isMetaMask)   
                 if(res.isMetaMask==true) { 
@@ -39,6 +39,7 @@ export default {
                     commit('setWeb3', provider);
                     const contract = new state.web3.eth.Contract(state.contractAbi, state.contractAddress);       
                     commit('setContract', contract);
+                    dispatch('collectableBooks');
                 } 
             });
         },
@@ -47,11 +48,14 @@ export default {
                 // Request account access 
                 const accounts = await ethereum.enable()
                 commit('updateAccountDetails', accounts[0])
+                
             } else {
               // Non-dapp browsers…
               console.log(
                 'Please install MetaMask'
               );
+
+
             }
         },
         publish: async ({state}, content) => {
@@ -88,6 +92,16 @@ export default {
                     console.log("====>events",events)
                     commit('fleek/publishedContent', events, { root: true })
                 })
-        }
+        },
+        collectableBooks: async ({state, commit}) => {
+            await state.pranaContract.getPastEvents('BookPublished',{
+                fromBlock:0,
+                toBlock:'latest'
+                },(err,events)=>{
+                    console.log("====>events",events)
+                    commit('fleek/collectableContent', events, { root: true })
+                })
+        },
+        
     }
 }

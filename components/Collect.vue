@@ -1,7 +1,7 @@
 <template>
     <v-col>
         <h3>Collectable Works</h3>
-        <v-list v-for="content in publishedContent" :key="publishedContent.indexOf(content)">
+        <v-list v-for="content in collectableContent" :key="collectableContent.indexOf(content)">
                 <v-list-item>
                     <v-row>
                         <Content v-bind:content="content"/>                        
@@ -18,8 +18,8 @@
 import { mapState, mapMutations } from 'vuex'
 export default {
     computed: {
-        ...mapState([
-            'publishedContent'
+        ...mapState("fleek",[
+            'collectableContent'
         ])
     },
     methods: {

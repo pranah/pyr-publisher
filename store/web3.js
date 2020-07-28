@@ -10,7 +10,7 @@ export const state = () => ({
   currentAccount: null,
   contractAddress: String,
   contractAbi: null,
-  prana: null
+  prana: {}
 //   web3: null
 
 })
@@ -28,16 +28,6 @@ export const mutations = {
   
   },
 
-  initWeb3: (state, payload) => {
-    // state.contractAddress = address
-    // state.contractAbi = contractJson.abi
-    // console.log(state.contractAddress)
-    // console.log(state.contractAbi)
-    // console.log(contractJson.networks['5777'].address)
-    console.log(contract)
-
-  },
-
   // updating current account details
   updateAccountDetails: (state, account) => {
     console.log('updateAccountDetails mutation is executing...')
@@ -45,15 +35,15 @@ export const mutations = {
     console.log(state.currentAccount)
   },
   
-  updateContract: (state,payload) => {
+  updateContract: (state, payload) => {
     state.contractAddress = payload.contractAddress
     state.contractAbi = payload.contractAbi
     console.log(state.contractAddress)
     console.log(state.contractAbi)
   },
 
-  contractInstance: (state,payload) => {
-    state.prana = () => payload
+  contractInstance: (state) => {
+    state.prana = new web3.eth.Contract(state.contractAbi, state.contractAddress)
     console.log(state.prana)
   }
 
@@ -64,10 +54,6 @@ export const actions = {
   // connecting to ethereum
   initEth: async({dispatch, commit}) => {
     console.log('executing initEth action...')
-    //  getWeb3.then(result => {
-    //      console.log("commiting update account")
-    //      commit('updateAccountDetails', result.account)
-    //  })
     if (window.ethereum) {
         
         // Request account access if needed
@@ -77,41 +63,56 @@ export const actions = {
         let contractAddress = contractJson.networks['5777'].address
         let contractAbi = contractJson.abi
         let prana = new web3.eth.Contract(contractAbi, contractAddress)
+        let publishedContent = []
 
-        commit('updateContract', {contractAddress, contractAbi})
+        await commit('updateContract', {contractAddress, contractAbi})
 
+        prana.getPastEvents('BookPublished',{
+          filter:{publisher:state.currentAccount},
+          fromBlock:0,
+          toBlock:'latest'
+          },(err,events)=>{
+            console.log("====>events",events)
+            })
 
-        await prana.methods.publishBook("abc", 555, 1, "def", 10)
-          .send({ from: accounts[0], gas : 6000000 })
-          .on('BookPublished', (event) => {
-                console.log(event)
-                })
-          .then((receipt) => {
-              console.log(receipt)
+        prana.events.BookPublished()
+          .on('data', (event) => {
+            let isbn = event.returnValues.isbn
+            let publisher = event.returnValues.publisher
+            let bookCoverAndDetails = event.returnValues.bookCoverAndDetails
+            let price = event.returnValues.price
+            console.log(isbn); 
+            console.log(publisher); 
+            console.log(bookCoverAndDetails); 
+            console.log(price); 
+            publishedContent.push({
+              isbn,
+              publisher,
+              bookCoverAndDetails,
+              price
             })
-          .then(() => {
-            prana.getPastEvents('BookPublished',{
-            filter:{publisher:state.currentAccount},
-            fromBlock:0,
-            toBlock:'latest'
-            },(err,events)=>{
-              console.log("====>events",events)
-              })
+            console.log(publishedContent)
             })
-          .catch(err => console.log('publish book error'))
 
-        await prana.methods.directPurchase(555)
-          .send({ from: accounts[0], gas: 6000000, value: web3.utils.toWei(web3.utils.toBN(1), 'ether') })
-          .on('transactionHash', (hash) => {
-            console.log("Minting is Successful !")
-            console.log(hash)
-            })
-          .on('error', (error) => {
-            console.log(error);
-            })
-          .then((receipt) => {
-              console.log(receipt)
-            })
+        // await prana.methods.publishBook("abc", 666, 1, "def", 10)
+        //   .send({ from: accounts[0], gas : 6000000 })
+        //   .then((receipt) => {
+        //       console.log(receipt)
+        //     })
+        //   .catch(err => console.log('publish book error'))
+
+        // await prana.methods.directPurchase(555)
+        //   .send({ from: accounts[0], gas: 6000000, value: web3.utils.toWei(web3.utils.toBN(1), 'ether') })
+        //   .on('transactionHash', (hash) => {
+        //     console.log("Minting is Successful !")
+        //     console.log(hash)
+        //     })
+        //   .on('error', (error) => {
+        //     console.log(error);
+        //     })
+        //   .then((receipt) => {
+        //       console.log(receipt)
+        //     })
         
         
 

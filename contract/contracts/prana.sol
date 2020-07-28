@@ -19,10 +19,17 @@ contract prana is ERC721 {
     //AccessControl and Ownable can be added instead of owner if time permits
     constructor() ERC721("PranaBooks", "PBT") public {
         owner = msg.sender;
+        // edit rentedBlocks to appropriate time/number of blocks before final version
+        // for a two-week rental period, the rentedBlocks would be 100800 blocks.
+        // assuming the block time is 12 seconds on average.
+        rentedBlocks = 10;
     }
 
     //address of the contract deployer
     address owner;
+
+    //rented number of blocks, to count time
+    uint256 rentedBlocks;
 
     //address of the helper contract
     address pranaHelperAddress;
@@ -91,7 +98,7 @@ contract prana is ERC721 {
 
 
     //Event to emit when a new book is published with its ISBN and publisher address
-    event BookPublished(address indexed publisher, uint256 indexed isbn, string indexed bookCoverAndDetails);
+    event BookPublished(address indexed publisher, uint256 indexed isbn, string indexed bookCoverAndDetails, uint256 price);
 
     //Event to emit when a tokenOwner puts out a token for sale
     event TokenForSale(uint256 indexed resalePrice, uint256 indexed isbn, uint256 indexed tokenId);
@@ -148,7 +155,7 @@ contract prana is ERC721 {
 
         //event that serves as an advertisement
         //last argument might be needed to change back to price
-        emit BookPublished(msg.sender, _isbn, _unencryptedBookDetailsCID);
+        emit BookPublished(msg.sender, _isbn, _unencryptedBookDetailsCID, _price);
 
     }
 
@@ -184,6 +191,8 @@ contract prana is ERC721 {
         require(msg.sender == ownerOf(tokenId), "You are not this token's owner");
         require(tokenData[tokenId].isUpForRenting == false,
         "Can't put a token for sale while it's put for renting");
+        require(tokenData[tokenId].rentedAtBlock + rentedBlocks < block.number,
+        "The currnet renting period is not over yet");
         tokenData[tokenId].resalePrice = salePrice;
         tokenData[tokenId].isUpForResale = true;
 
@@ -223,9 +232,7 @@ contract prana is ERC721 {
         require(tokenData[tokenId].isUpForResale == false,
         "Can't put a copy up for renting if it's already on sale!");
         if(tokenData[tokenId].rentee != address(0)){
-                // the copy is rented for a two-week period, which is 100800 blocks.
-                // assuming the block time is 12 seconds on average
-                require(block.number > tokenData[tokenId].rentedAtBlock + 100800,
+                require(block.number > tokenData[tokenId].rentedAtBlock + rentedBlocks,
                 "The renting period is not over yet to put it for renting again");
             }
         tokenData[tokenId].rentingPrice = _newPrice;
@@ -245,6 +252,7 @@ contract prana is ERC721 {
 
         tokenData[tokenId].rentee = msg.sender;
         tokenData[tokenId].rentedAtBlock = block.number;
+        tokenData[tokenId].isUpForRenting = false;
 
         _updateAccountBalances(tokenId);
 
@@ -257,17 +265,13 @@ contract prana is ERC721 {
         require(ownerOf(tokenId) == msg.sender || tokenData[tokenId].rentee == msg.sender,
         "You are not authorized to view this copy!");
         if(ownerOf(tokenId) == msg.sender){
-            require(tokenData[tokenId].isUpForRenting == false,
-            "You have put your copy for renting, please take it down to view the content");
             if(tokenData[tokenId].rentee != address(0)){
-                // the copy is rented for a two-week period, which is 100800 blocks.
-                // assuming the block time is 12 seconds on average
-                require(block.number > tokenData[tokenId].rentedAtBlock + 100800,
+                require(block.number > tokenData[tokenId].rentedAtBlock + rentedBlocks,
                 "The renting period is not over yet for you to consume the content");
             }
         }
         else if(tokenData[tokenId].rentee == msg.sender){
-            require(block.number <= tokenData[tokenId].rentedAtBlock + 100800,
+            require(block.number <= tokenData[tokenId].rentedAtBlock + rentedBlocks,
             "Your rental period has expired");
         }
         return booksInfo[tokenData[tokenId].isbn].encryptedBookDataHash;

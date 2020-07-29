@@ -7,7 +7,8 @@
                 <v-row>
                     <Content v-bind:content="content"/>                        
                     <v-col>
-                        <v-btn color="green" @click="purchase(content.returnValues.isbn)">Buy</v-btn>
+                        <v-btn color="green" @click="purchase(content)">Buy</v-btn>
+                        <!-- <v-btn color="green" @click="purchase(content.returnValues.isbn,content.returnValues.price)">Buy</v-btn> -->
                     </v-col>
                 </v-row>                    
             </v-list-item>

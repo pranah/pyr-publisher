@@ -81,7 +81,7 @@ export default {
             },(err,events)=>{
                 console.log("====>events",events)
                 commit('fleek/publishedContent', events, { root: true })
-            })
+            });
         },
         getCollectables: async ({state, commit}) => {
             await state.pranaContract.getPastEvents('BookPublished', {
@@ -91,11 +91,20 @@ export default {
                 commit('fleek/collectableContent', res, {root: true})
             }).catch(err => {console.log(err);})
         },
-        purchase: async ({state}, isbn) => {
+        purchase: async ({state},content) => {
+            let price = content.returnValues.price
+            let isbn = content.returnValues.isbn
             await state.pranaContract.methods.directPurchase(isbn)
-            .send({from: state.currentAccount, gas: 6000000})
+            // .send({from: state.currentAccount, gas: 6000000})
+            .send({ from: state.currentAccount, gas: 6000000, value: state.web3.utils.toWei(price, 'ether') })
+            .on('transactionHash', (hash) => {
+                console.log("Minting is Successful !")
+                console.log(hash)
+                })
             .then(receipt => {
                 console.log(receipt);
+                let tokenId = receipt.events.Transfer.returnValues.tokenId
+                commit('fleek/collectContent', {content, tokenId}, { root: true })
             }).catch(err => {console.log(err);})
         }
     }

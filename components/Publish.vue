@@ -29,7 +29,7 @@
                     type="number"
                     min="0" 
                     max="999999" 
-                    label="Price"
+                    label="Price in ETH"
                     v-model="content.price"
                 />
                 <v-btn color="green" @click="publish(content)">Publish</v-btn>

@@ -24,8 +24,8 @@ export default {
             state.publishedContent = contentList;
         },
         collectContent: (state, content) => {
+            state.collectContent = []
             state.collectedContent.push(content);
-            console.log(state.collectedContent);
         },
         collectableContent: (state, content) => {
             state.collectableContent = content;
@@ -62,14 +62,7 @@ export default {
                     .shareBucket({ bucket: content.title })
                     .then((res) => {
                         const bucket = res.getThreadinfo();
-                        dispatch('web3/publish', {content, bucket}, { root: true }); 
-                        // dispatch('web3/myPublished', {}, {root: true})
-                        // const threadInfo = res.getThreadinfo();
-                        // commit('publishedContent', {
-                        // title: content.title,
-                        // key: threadInfo.getKey(),
-                        // addresses: threadInfo.getAddressesList()
-                        // })
+                        dispatch('web3/publish', {content, bucket}, { root: true });
                     })
                     .catch((err) => {
                         console.error(err);

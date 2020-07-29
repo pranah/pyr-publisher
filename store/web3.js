@@ -92,7 +92,7 @@ export default {
                 commit('fleek/collectableContent', res, {root: true})
             }).catch(err => {console.log(err);})
         },
-        purchase: async ({state, commit},content) => {
+        purchase: async ({state, dispatch},content) => {
             let price = content.returnValues.price
             let isbn = content.returnValues.isbn
             await state.pranaContract.methods.directPurchase(isbn)
@@ -105,7 +105,7 @@ export default {
             .then(receipt => {
                 console.log(receipt);
                 let tokenId = receipt.events.Transfer.returnValues.tokenId
-                commit('fleek/collectContent', {content, tokenId}, { root: true })
+                dispatch('myCollection')
             }).catch(err => {console.log(err);})
         },
         myCollection: async({state, commit}) => {

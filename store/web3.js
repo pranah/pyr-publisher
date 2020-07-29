@@ -42,11 +42,13 @@ export default {
                 } 
             });
         },
-        initEth: async({commit}) => {
+        getAccount: async ({commit}) => {
+            const accounts = await ethereum.enable()
+            commit('updateAccountDetails', accounts[0])
+        },
+        initEth: async({commit, dispatch}) => {
             if (window.ethereum) {        
-                // Request account access 
-                const accounts = await ethereum.enable()
-                commit('updateAccountDetails', accounts[0])
+                dispatch('getAccount')
             } else {
               // Non-dapp browsers…
               console.log(

@@ -58,13 +58,13 @@ export default {
             }
         },
         publish: async ({state, dispatch}, toPublish) => {
-            console.log("Bucket: " + toPublish.sharedBucket);
+            const bucketAdresses = toPublish.bucket.getAddressesList();
             await state.pranaContract.methods.publishBook(
-                toPublish.content.file,
+                bucketAdresses[0].slice(-116),
                 toPublish.content.isbn,
                 toPublish.content.price,
-                toPublish.content.title,
-                toPublish.content.transactionCut
+                toPublish.content.coverImg,
+                1 // Transacation cut
             ).send({ from: state.currentAccount, gas : 6000000 })
             .on('BookPublished', (event) => {
                 console.log(event)

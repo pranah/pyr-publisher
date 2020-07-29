@@ -37,7 +37,7 @@ export default {
             });
             commit('initSpaceClient', client);
         },
-        publish: ({ state, dispatch }, content) => {
+        publish: ({ state, commit, dispatch }, content) => {
             console.log(content);
             state.client
             .createBucket({ slug: content.title})
@@ -57,14 +57,22 @@ export default {
                 });
             
                 stream.on('end', () => {
-                state.client
-                .shareBucket({ bucket: content.title })
-                .then((res) => {
-                    dispatch('web3/publish', {content, res}, { root: true })
-                })
-                .catch((err) => {
-                    console.error(err);
-                });
+                    state.client
+                    .shareBucket({ bucket: content.title })
+                    .then((res) => {
+                        const bucket = res.getThreadinfo();
+                        dispatch('web3/publish', {content, bucket}, { root: true }); 
+                        // dispatch('web3/myPublished', {}, {root: true})
+                        // const threadInfo = res.getThreadinfo();
+                        // commit('publishedContent', {
+                        // title: content.title,
+                        // key: threadInfo.getKey(),
+                        // addresses: threadInfo.getAddressesList()
+                        // })
+                    })
+                    .catch((err) => {
+                        console.error(err);
+                    });
                 });
             })
             .catch((err) => {

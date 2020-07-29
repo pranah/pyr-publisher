@@ -2,7 +2,7 @@
     <v-row>
         <v-col>  
             <h3>Publish Work</h3>
-            <v-form>
+            <v-form style="margin: 5%;">
                 <v-text-field 
                     required
                     label="Title"
@@ -14,9 +14,14 @@
                     v-model="content.file"
                 />
                 <v-text-field 
+                    required
+                    label="Cover Image (file path)"
+                    v-model="content.coverImg"
+                />
+                <v-text-field 
                     type="number" 
                     min="0" 
-                    max="999999" 
+                    max="9999999999999" 
                     label="ISBN"
                     v-model="content.isbn"
                 />
@@ -26,13 +31,6 @@
                     max="999999" 
                     label="Price"
                     v-model="content.price"
-                />
-                <v-text-field 
-                    type="number" 
-                    min="0" 
-                    max="999999" 
-                    label="Secondhand transaction cut"
-                    v-model="content.transactionCut"
                 />
                 <v-btn color="green" @click="publish(content)">Publish</v-btn>
             </v-form>
@@ -47,6 +45,7 @@ export default {
     data: () => ({
         content: {
             title: '',
+            coverImg: '',
             file: '',
             isbn: 0,
             price: 0,

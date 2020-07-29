@@ -31,7 +31,7 @@ export default {
         },
     },
     actions: {
-        fetchProvider: async ({state, commit}) => {
+        fetchProvider: async ({state, dispatch, commit}) => {
             detectEthereumProvider().then(res => {
                 commit('fetchedProvider', res.isMetaMask)   
                 if(res.isMetaMask==true) { 
@@ -39,6 +39,7 @@ export default {
                     commit('setWeb3', provider);
                     const contract = new state.web3.eth.Contract(state.contractAbi, state.contractAddress);       
                     commit('setContract', contract);
+                    dispatch('myPublished');
                 } 
             });
         },

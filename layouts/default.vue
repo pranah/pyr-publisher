@@ -93,8 +93,7 @@ export default {
         initLibP2P: 'libp2p/initLibP2P',
         fetchProvider: 'web3/fetchProvider',
         initSpaceClient: 'fleek/initSpaceClient',
-        getAccount: 'web3/getAccount',
-        myPublished: 'web3/myPublished'
+        getAccount: 'web3/getAccount'
       })
   },
   created() {
@@ -102,7 +101,6 @@ export default {
     this.fetchProvider();
     this.initSpaceClient();
     this.getAccount();
-    this.myPublished();
   } 
 }
 </script>

@@ -40,21 +40,22 @@ export default {
                     const contract = new state.web3.eth.Contract(state.contractAbi, state.contractAddress);       
                     commit('setContract', contract);
                     dispatch('myPublished');
+
                 } 
             });
         },
-        getAccount: async ({commit}) => {
+        getAccount: async ({commit, dispatch}) => {
             const accounts = await ethereum.enable()
-            commit('updateAccountDetails', accounts[0])
+            await commit('updateAccountDetails', accounts[0])
+            dispatch('myCollection')
+
         },
         initEth: async({commit, dispatch}) => {
             if (window.ethereum) {        
                 dispatch('getAccount')
             } else {
               // Non-dapp browsers…
-              console.log(
-                'Please install MetaMask'
-              );
+              console.log('Please install MetaMask');
             }
         },
         publish: async ({state, dispatch}, toPublish) => {
@@ -91,7 +92,7 @@ export default {
                 commit('fleek/collectableContent', res, {root: true})
             }).catch(err => {console.log(err);})
         },
-        purchase: async ({state},content) => {
+        purchase: async ({state, commit},content) => {
             let price = content.returnValues.price
             let isbn = content.returnValues.isbn
             await state.pranaContract.methods.directPurchase(isbn)
@@ -106,6 +107,37 @@ export default {
                 let tokenId = receipt.events.Transfer.returnValues.tokenId
                 commit('fleek/collectContent', {content, tokenId}, { root: true })
             }).catch(err => {console.log(err);})
+        },
+        myCollection: async({state, commit}) => {
+            let tokenCount
+            let tokenId
+            await state.pranaContract.methods.balanceOf(state.currentAccount)
+                .call({from: state.currentAccount})
+                .then(count => {
+                    tokenCount = count
+                    console.log(`Number of tokens: ${tokenCount}`)
+                })
+                .catch((err) => {
+                    console.error(err);
+                });
+
+            for(let i=0; i<tokenCount; i++){
+
+            state.pranaContract.methods.tokenOfOwnerByIndex(state.currentAccount, i)
+                .call({ from: state.currentAccount})
+                .then((id) => {
+                tokenId = id
+            state.pranaContract.methods.consumeContent(id)
+                .call({ from: state.currentAccount})
+                .then((hash) => {
+                console.log(`EncryptedCID of tokenid ${id}: ${hash}`);
+                })
+                })
+                .catch((err) => {
+                    console.error(err);
+                });
+
+            }   
         }
     }
 }

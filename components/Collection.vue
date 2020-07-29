@@ -4,7 +4,9 @@
         <v-list v-for="content in collectedContent" :key="collectedContent.indexOf(content)">
             <v-list-item>
                 <v-row>
-                    <Content v-bind:content="content"/>                        
+                    <v-col>
+                        <span>{{ content }}</span>    
+                    </v-col>                     
                     <v-col>
                         <v-btn color="green" @click="getContent(content)">Download</v-btn>
                     </v-col>
@@ -18,7 +20,7 @@
 import { mapState, mapActions } from 'vuex'
 export default {
     computed: {
-        ...mapState([
+        ...mapState('fleek', [
             'collectedContent'
         ])
     },

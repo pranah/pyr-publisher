@@ -25,6 +25,7 @@ export default {
         },
         collectContent: (state, content) => {
             state.collectedContent.push(content);
+            console.log(state.collectedContent);
         },
         collectableContent: (state, content) => {
             state.collectableContent = content;

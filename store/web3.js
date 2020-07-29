@@ -123,19 +123,20 @@ export default {
 
             for(let i=0; i<tokenCount; i++){
 
-            state.pranaContract.methods.tokenOfOwnerByIndex(state.currentAccount, i)
-                .call({ from: state.currentAccount})
-                .then((id) => {
-                tokenId = id
-            state.pranaContract.methods.consumeContent(id)
-                .call({ from: state.currentAccount})
-                .then((hash) => {
-                console.log(`EncryptedCID of tokenid ${id}: ${hash}`);
-                })
-                })
-                .catch((err) => {
-                    console.error(err);
-                });
+                state.pranaContract.methods.tokenOfOwnerByIndex(state.currentAccount, i)
+                    .call({ from: state.currentAccount})
+                    .then((id) => {
+                    tokenId = id
+                    state.pranaContract.methods.consumeContent(id)
+                    .call({ from: state.currentAccount})
+                    .then((hash) => {
+                        commit('fleek/collectContent', hash, {root: true})
+                        console.log(`EncryptedCID of tokenid ${id}: ${hash}`);
+                    })
+                    })
+                    .catch((err) => {
+                        console.error(err);
+                    });
 
             }   
         }

@@ -76,7 +76,8 @@ export default {
         initLibP2P: 'libp2p/initLibP2P',
         fetchProvider: 'web3/fetchProvider',
         initSpaceClient: 'fleek/initSpaceClient',
-        getAccount: 'web3/getAccount'
+        getAccount: 'web3/getAccount',
+        myCollection: 'web3/myCollection'
       })
   },
   created() {

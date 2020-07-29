@@ -54,40 +54,46 @@ export default {
               );
             }
         },
-        publish: async ({state}, content) => {
+        publish: async ({state, dispatch}, toPublish) => {
+            console.log("Bucket: " + toPublish.sharedBucket);
             await state.pranaContract.methods.publishBook(
-                content.file,
-                content.isbn,
-                content.price,
-                content.title,
-                content.transactionCut
+                toPublish.content.file,
+                toPublish.content.isbn,
+                toPublish.content.price,
+                toPublish.content.title,
+                toPublish.content.transactionCut
             ).send({ from: state.currentAccount, gas : 6000000 })
             .on('BookPublished', (event) => {
                 console.log(event)
-            })
-            .then((receipt) => {
+            }).then((receipt) => {
                 console.log(receipt)
-            })
-            .then(() => {
-                state.pranaContract.getPastEvents('BookPublished',{
-                filter:{publisher:state.currentAccount},
-                fromBlock:0,
-                toBlock:'latest'
-                },(err,events)=>{
-                    console.log("====>events",events)
-                })
-            })
-            .catch(err => console.log('Publishing Error'))
+                dispatch('myPublished')
+            }).catch(err => console.log(err))
         },
         myPublished: async ({state, commit}) => {
             await state.pranaContract.getPastEvents('BookPublished',{
                 filter:{publisher:state.currentAccount},
                 fromBlock:0,
                 toBlock:'latest'
-                },(err,events)=>{
-                    console.log("====>events",events)
-                    commit('fleek/publishedContent', events, { root: true })
-                })
+            },(err,events)=>{
+                console.log("====>events",events)
+                commit('fleek/publishedContent', events, { root: true })
+            })
+        },
+        getCollectables: async ({state, commit}) => {
+            await state.pranaContract.getPastEvents('BookPublished', {
+                fromBlock: 0,
+                toBlock: 'latest'
+            }).then(res => {
+                commit('fleek/collectableContent', res, {root: true})
+            }).catch(err => {console.log(err);})
+        },
+        purchase: async ({state}, isbn) => {
+            await state.pranaContract.methods.directPurchase(isbn)
+            .send({from: state.currentAccount, gas: 6000000})
+            .then(receipt => {
+                console.log(receipt);
+            }).catch(err => {console.log(err);})
         }
     }
 }

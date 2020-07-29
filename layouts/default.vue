@@ -91,12 +91,14 @@ export default {
   methods: {
       ...mapActions({
         initLibP2P: 'libp2p/initLibP2P',
-        fetchProvider: 'web3/fetchProvider'
+        fetchProvider: 'web3/fetchProvider',
+        initSpaceClient: 'fleek/initSpaceClient'
       })
   },
   created() {
     this.initLibP2P();
     this.fetchProvider();
+    this.initSpaceClient();
   } 
 }
 </script>

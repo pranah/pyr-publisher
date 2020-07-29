@@ -62,7 +62,7 @@ export default {
         ])
     },
     methods: {
-        ...mapActions('web3',[
+        ...mapActions('fleek',[
             'publish'
         ])
     },

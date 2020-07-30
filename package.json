@@ -29,6 +29,7 @@
     "libp2p-websockets": "^0.13.6",
     "nuxt": "^2.13.0",
     "path": "^0.12.7",
+    "truffle": "^5.1.36",
     "web3": "^1.2.11",
     "xmlhttprequest": "^1.8.0"
   },

@@ -34,6 +34,8 @@ contract prana is ERC721 {
     //address of the helper contract
     address pranaHelperAddress;
 
+    EnumerableSet.UintSet upForResaleTokens;
+
     //Modifier for onlyOwner functions
     //this could be figured out with AccessControl if there's enough time
     modifier onlyOwner {
@@ -56,7 +58,7 @@ contract prana is ERC721 {
     struct BookInfo{
         string encryptedBookDataHash;
         string unencryptedBookDetailsCID;
-        address publisherAddress;
+        address payable publisherAddress;
         uint256 bookPrice;
         uint256 transactionCut;
         uint256 bookSales;
@@ -94,11 +96,12 @@ contract prana is ERC721 {
     mapping (uint256 => TokenDetails) internal tokenData;
 
     // account balances, for everyone involved.
-    mapping (address => uint256) internal accountBalance;
+    // mapping (address => uint256) internal accountBalance;
 
 
     //Event to emit when a new book is published with its ISBN and publisher address
-    event BookPublished(address indexed publisher, uint256 indexed isbn, string indexed bookCoverAndDetails, uint256 price);
+    event BookPublished(address indexed publisher, uint256 indexed isbn,
+    string bookCoverAndDetails, uint256 indexed price, uint256 transactionCut);
 
     //Event to emit when a tokenOwner puts out a token for sale
     event TokenForSale(uint256 indexed resalePrice, uint256 indexed isbn, uint256 indexed tokenId);
@@ -120,8 +123,15 @@ contract prana is ERC721 {
     // various actors get their cut before ownership is transfered
     function _beforeTokenTransfer(address from, address to, uint256 tokenId) internal override {
         if(from != address(0) && to != address(0)){
-            _updateAccountBalances(tokenId);
+            if(msg.value>0){
+                _updateAccountBalances(tokenId);
+            }
         }
+        // Resale and Renting flags updated to false at each Token Transfer
+        tokenData[tokenId].isUpForResale = false;
+        tokenData[tokenId].isUpForRenting = false;
+
+        upForResaleTokens.remove(tokenId);
      }
 
     // an internal function to update the balances for each monetary transaction
@@ -129,10 +139,14 @@ contract prana is ERC721 {
     function _updateAccountBalances(uint256 tokenId) internal {
 
         // transactinCut for the author/publisher gets debited
-        accountBalance[booksInfo[tokenData[tokenId].isbn].publisherAddress] += booksInfo[tokenData[tokenId].isbn].transactionCut*(msg.value/100);
+        // accountBalance[booksInfo[tokenData[tokenId].isbn].publisherAddress] += booksInfo[tokenData[tokenId].isbn].transactionCut*(msg.value/100);
+        (booksInfo[tokenData[tokenId].isbn].publisherAddress).transfer(booksInfo[tokenData[tokenId].isbn].transactionCut*(msg.value/100));
 
         //the remaining money goes to the token owner
-        accountBalance[ownerOf(tokenId)] += msg.value - (booksInfo[tokenData[tokenId].isbn].transactionCut*(msg.value/100));
+        // accountBalance[ownerOf(tokenId)] += msg.value - (booksInfo[tokenData[tokenId].isbn].transactionCut*(msg.value/100));
+        address payable tokenOwner = payable(ownerOf(tokenId));
+        (tokenOwner).transfer(msg.value - (booksInfo[tokenData[tokenId].isbn].transactionCut*(msg.value/100)));
+        //  a better way would be to use call.value()(), but using .transfer for now
 
     }
 
@@ -155,7 +169,7 @@ contract prana is ERC721 {
 
         //event that serves as an advertisement
         //last argument might be needed to change back to price
-        emit BookPublished(msg.sender, _isbn, _unencryptedBookDetailsCID, _price);
+        emit BookPublished(msg.sender, _isbn, _unencryptedBookDetailsCID, _price, _transactionCut);
 
     }
 
@@ -175,13 +189,12 @@ contract prana is ERC721 {
 
         tokenData[tokenId].isbn = _isbn;
         tokenData[tokenId].copyNumber = booksInfo[_isbn].bookSales;
-        tokenData[tokenId].isUpForResale = false;
-        tokenData[tokenId].isUpForRenting = false;
         tokenData[tokenId].rentee = address(0);
         tokenData[tokenId].rentedAtBlock = 0;
 
         // the money goes to the plubisher's accountBalance.
-        accountBalance[booksInfo[_isbn].publisherAddress] += msg.value;
+        // accountBalance[booksInfo[_isbn].publisherAddress] += msg.value;
+        (booksInfo[_isbn].publisherAddress).transfer(msg.value);
         return true;
     }
 
@@ -192,12 +205,13 @@ contract prana is ERC721 {
         require(tokenData[tokenId].isUpForRenting == false,
         "Can't put a token for sale while it's put for renting");
         require(tokenData[tokenId].rentedAtBlock + rentedBlocks < block.number,
-        "The currnet renting period is not over yet");
+        "The current renting period is not over yet");
         tokenData[tokenId].resalePrice = salePrice;
         tokenData[tokenId].isUpForResale = true;
 
         // The helper contract gets approved for token transfer when someone's ready to buy
         approve(pranaHelperAddress, tokenId);
+        upForResaleTokens.add(tokenId);
         // event that serves as advertisement for all
         emit TokenForSale(salePrice, tokenData[tokenId].isbn, tokenId);
     }
@@ -214,15 +228,7 @@ contract prana is ERC721 {
 
         safeTransferFrom(ownerOf(tokenId), _tokenRecipient, tokenId);
 
-        // TODO:
-        // _updateAccountBalances(tokenId) should go into transferFrom()
-        // and safeTransferFrom() functions after mutability error resolution
 
-        //  This went into _beforeTokenTransfer()
-        // _updateAccountBalances(tokenId);
-
-        tokenData[tokenId].isUpForResale = false;
-        tokenData[tokenId].isUpForRenting = false;
 
     }
 
@@ -280,21 +286,30 @@ contract prana is ERC721 {
     // function to get the balances stored in contract back into the respective owners' account
     // this is to mainly to reduce the number of transactions and transaction cost associated with it.
     // WARNING: Extensive testing required before this can be finalized!
-    function withdrawBalance() public payable{
-        require(accountBalance[msg.sender] > 0, "You don't have any balance to withdraw");
-        (msg.sender).transfer(accountBalance[msg.sender]);
-        accountBalance[msg.sender] = 0;
-    }
+    // function withdrawBalance() public payable{
+    //     require(accountBalance[msg.sender] > 0, "You don't have any balance to withdraw");
+    //     (msg.sender).transfer(accountBalance[msg.sender]);
+    //     accountBalance[msg.sender] = 0;
+    // }
 
     //function to view balance
-    function viewBalance() public view returns(uint256){
-        return accountBalance[msg.sender];
-    }
+    // function viewBalance() public view returns(uint256){
+    //     return accountBalance[msg.sender];
+    // }
 
     //function to get book details with the tokenId
     //returns CID of coverpic+bookname
-    function viewTokenBookDetails(uint256 _tokenId) public view returns (string memory) {
+    function viewTokenDetails(uint256 _tokenId) public view returns (uint256, string memory, uint256, bool) {
         require(booksInfo[tokenData[_tokenId].isbn].publisherAddress!=address(0), "This book is not on the platform");
-        return booksInfo[tokenData[_tokenId].isbn].unencryptedBookDetailsCID;
+        return (tokenData[_tokenId].isbn, booksInfo[tokenData[_tokenId].isbn].unencryptedBookDetailsCID,
+        tokenData[_tokenId].copyNumber, tokenData[_tokenId].isUpForResale);
+    }
+
+    function numberofTokensForResale() public view returns(uint256){
+        return upForResaleTokens.length();
+    }
+
+    function tokenForResaleAtIndex(uint256 index) public view returns (uint256) {
+        return upForResaleTokens.at(index);
     }
 }

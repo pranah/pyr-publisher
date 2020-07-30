@@ -91,6 +91,7 @@ export default {
                 fromBlock: 0,
                 toBlock: 'latest'
             }).then(res => {
+                console.log(res);
                 commit('fleek/collectableContent', res, {root: true})
             }).catch(err => {console.log(err);})
         },

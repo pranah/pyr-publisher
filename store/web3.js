@@ -1,7 +1,9 @@
 import Web3 from 'web3';
 import contractJson from "../contract/build/contracts/prana.json";
 import detectEthereumProvider from '@metamask/detect-provider';
-import Vue from 'vue'
+import Vue from 'vue';
+var sigUtil = require('eth-sig-util')
+import ethUtil from 'ethereumjs-util'
 
 export default {
     state: () => ({
@@ -124,21 +126,28 @@ export default {
             for(let i=0; i<tokenCount; i++){
 
                 state.pranaContract.methods.tokenOfOwnerByIndex(state.currentAccount, i)
-                    .call({ from: state.currentAccount})
-                    .then((id) => {
-                    tokenId = id
-                    state.pranaContract.methods.consumeContent(id)
-                    .call({ from: state.currentAccount})
-                    .then((hash) => {
-                        commit('fleek/collectContent', hash, {root: true})
-                        console.log(`EncryptedCID of tokenid ${id}: ${hash}`);
-                    })
-                    })
-                    .catch((err) => {
-                        console.error(err);
-                    });
+                .call({ from: state.currentAccount})
+                .then((id) => {
+                tokenId = id
+                state.pranaContract.methods.consumeContent(id)
+                .call({ from: state.currentAccount})
+                .then((hash) => {
+                    commit('fleek/collectContent', {tokenId: id, bucket: hash}, {root: true})
+                    console.log(`EncryptedCID of tokenid ${id}: ${hash}`);
+                })
+                })
+                .catch((err) => {
+                    console.error(err);
+                });
 
             }   
+        },
+        signMessage: ({state}, signThis) => {
+            state.web3.eth.personal.sign(signThis, state.currentAccount)
+            .then(sig => {
+                state.web3.eth.personal.ecRecover(signThis, sig)
+                .then(console.log);
+            })
         }
     }
 }

@@ -16,6 +16,8 @@
     "@nuxtjs/axios": "^5.11.0",
     "@openzeppelin/contracts": "^3.1.0",
     "child_process": "^1.0.2",
+    "eth-sig-util": "^2.5.3",
+    "ethereumjs-util": "^7.0.3",
     "fs": "0.0.1-security",
     "libp2p": "^0.28.7",
     "libp2p-bootstrap": "^0.11.0",

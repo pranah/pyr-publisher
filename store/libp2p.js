@@ -76,5 +76,14 @@ export default {
             await libp2p.start()
 
         },
+        subscribeToContent: async ({state}, content) => {
+            await state.p2pNode.pubsub.subscribe(content, (msg) => {
+                console.log(`Received: ${msg.data.toString()}`)
+            })
+        },
+        requestContentKey: ({state}, content) => {
+            console.log(content);
+            state.p2pNode.pubsub.publish(content, Buffer.from('Bird bird bird, bird is the word!'))
+        },
     }
 }

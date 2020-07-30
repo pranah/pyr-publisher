@@ -5,10 +5,11 @@
             <v-list-item>
                 <v-row>
                     <v-col>
-                        <span>{{ content }}</span>    
-                    </v-col>                     
+                        <span>{{ content.tokenId }}</span>    
+                    </v-col>  
+                    <MyCopy v-bind:bucket="content.bucket"/>                 
                     <v-col>
-                        <v-btn color="green" @click="getContent(content)">Download</v-btn>
+                        <v-btn color="green" @click="signMessage(content.bucket)">Download</v-btn>
                     </v-col>
                 </v-row>                    
             </v-list-item>
@@ -25,8 +26,11 @@ export default {
         ])
     },
     methods: {
-        ...mapActions([
-            'getContent'
+        ...mapActions('libp2p', [
+            'requestContentKey'
+        ]),
+        ...mapActions('web3', [
+            'signMessage'
         ])
     }
 }

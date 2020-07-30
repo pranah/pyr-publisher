@@ -82,7 +82,7 @@ export default {
                 fromBlock:0,
                 toBlock:'latest'
             },(err,events)=>{
-                console.log("====>events",events)
+                console.log("My Published",events)
                 commit('fleek/publishedContent', events, { root: true })
             });
         },
@@ -94,11 +94,11 @@ export default {
                 commit('fleek/collectableContent', res, {root: true})
             }).catch(err => {console.log(err);})
         },
-        purchase: async ({state, dispatch},content) => {
-            let price = content.returnValues.price
-            let isbn = content.returnValues.isbn
+        purchase: async ({state, commit, dispatch},content) => {
+            let price = content.price
+            let isbn = content.isbn
+            let bookhash
             await state.pranaContract.methods.directPurchase(isbn)
-            // .send({from: state.currentAccount, gas: 6000000})
             .send({ from: state.currentAccount, gas: 6000000, value: state.web3.utils.toWei(price, 'ether') })
             .on('transactionHash', (hash) => {
                 console.log("Minting is Successful !")
@@ -106,13 +106,24 @@ export default {
                 })
             .then(receipt => {
                 console.log(receipt);
-                let tokenId = receipt.events.Transfer.returnValues.tokenId
-                dispatch('myCollection')
+                let id = receipt.events.Transfer.returnValues.tokenId
+                state.pranaContract.methods.consumeContent(id)
+                    .call({ from: state.currentAccount})
+                    .then((hash) => {
+                        bookhash = hash
+                        console.log(`EncryptedCID of tokenid ${id}: ${hash}`)
+                    })
+                    state.pranaContract.methods.viewTokenBookDetails(id)
+                    .call({ from: state.currentAccount})
+                    .then((content) => {
+                        console.log(`UnencryptedCID of tokenid ${id}: ${content}`)
+                        commit('fleek/collectContent', {content, bookhash}, {root: true})
+                    })
             }).catch(err => {console.log(err);})
         },
         myCollection: async({state, commit}) => {
             let tokenCount
-            let tokenId
+            let bookhash
             await state.pranaContract.methods.balanceOf(state.currentAccount)
                 .call({from: state.currentAccount})
                 .then(count => {
@@ -128,12 +139,17 @@ export default {
                 state.pranaContract.methods.tokenOfOwnerByIndex(state.currentAccount, i)
                     .call({ from: state.currentAccount})
                     .then((id) => {
-                    tokenId = id
                     state.pranaContract.methods.consumeContent(id)
                     .call({ from: state.currentAccount})
                     .then((hash) => {
-                        commit('fleek/collectContent', hash, {root: true})
+                        bookhash = hash
                         console.log(`EncryptedCID of tokenid ${id}: ${hash}`);
+                    })
+                    state.pranaContract.methods.viewTokenBookDetails(id)
+                    .call({ from: state.currentAccount})
+                    .then((content) => {
+                        commit('fleek/collectContent', {content, bookhash}, {root: true})
+                        console.log(`UnencryptedCID of tokenid ${id}: ${content}`);
                     })
                     })
                     .catch((err) => {

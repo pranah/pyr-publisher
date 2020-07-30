@@ -21,14 +21,35 @@ export default {
             state.collectorPageSwitch = page;
         },
         publishedContent: (state, contentList) => {
-            state.publishedContent = contentList;
+            let isbn
+            let price
+            let publisher
+            let metadata
+            for(let i=0; i<contentList.length; i++){
+                isbn = contentList[i].returnValues.isbn
+                price = contentList[i].returnValues.price
+                publisher = contentList[i].returnValues.publisher
+                metadata = contentList[i].returnValues.metadata
+                state.publishedContent.push({isbn, price, publisher, metadata});
+            }
+            // state.publishedContent = contentList;
         },
         collectContent: (state, content) => {
-            state.collectContent = []
             state.collectedContent.push(content);
         },
-        collectableContent: (state, content) => {
-            state.collectableContent = content;
+        collectableContent: (state, contentList) => {
+            let isbn
+            let price
+            let publisher
+            let metadata
+            for(let i=0; i<contentList.length; i++){
+                isbn = contentList[i].returnValues.isbn
+                price = contentList[i].returnValues.price
+                publisher = contentList[i].returnValues.publisher
+                metadata = contentList[i].returnValues.metadata
+                state.collectableContent.push({isbn, price, publisher, metadata});
+            }
+            // state.collectableContent = content;
         },
     },
     actions: {

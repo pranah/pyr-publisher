@@ -1,6 +1,7 @@
 <template>
     <v-col>
-        {{content.returnValues.isbn}}
+        <!-- {{content.returnValues.isbn}} -->
+        {{content.isbn}}
     </v-col>
 </template>
 

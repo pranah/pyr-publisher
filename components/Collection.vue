@@ -5,7 +5,8 @@
             <v-list-item>
                 <v-row>
                     <v-col>
-                        <span>{{ content }}</span>    
+                        <span>{{ content.content }}</span>    
+                        <span>{{ content.bookhash }}</span>    
                     </v-col>                     
                     <v-col>
                         <v-btn color="green" @click="getContent(content)">Download</v-btn>
